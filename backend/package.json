@@ -1,0 +1,25 @@
+{
+  "name": "devproposal-hub-backend",
+  "version": "1.0.0",
+  "description": "API REST para DevProposal Hub - Plataforma de presentación de proyectos de software",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["proposals", "projects", "mongodb", "express"],
+  "author": "DevProposal Hub",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "express-rate-limit": "^7.2.0",
+    "helmet": "^7.1.0",
+    "joi": "^17.12.2",
+    "mongoose": "^8.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
