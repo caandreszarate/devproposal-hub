@@ -642,5 +642,41 @@ function buildPrintContent() {
 export function downloadPDF() {
   syncStateFromInputs();
   buildPrintContent();
-  setTimeout(() => window.print(), 120);
+
+  const content = document.getElementById('print-report')?.innerHTML || '';
+  if (!content.trim()) {
+    console.error('[Planner] print-report vacío — abortando PDF');
+    return;
+  }
+
+  // Base URL para cargar print.css correctamente (GitHub Pages usa subdirectorio)
+  const base = new URL('.', document.baseURI).href;
+
+  const win = window.open('', '_blank');
+  if (!win) {
+    alert('Permite las ventanas emergentes en este sitio para descargar el PDF.');
+    return;
+  }
+
+  win.document.write(`<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Plan de Proyecto — DevProposal Hub</title>
+  <link rel="stylesheet" href="${base}styles/print.css">
+  <style>
+    body { margin: 0; background: #fff; }
+    #print-report { display: block !important; }
+  </style>
+</head>
+<body>
+  <div id="print-report">${content}</div>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() { window.print(); }, 600);
+    });
+  <\/script>
+</body>
+</html>`);
+  win.document.close();
 }
