@@ -657,7 +657,7 @@
 }
 
 .footer__author::before {
-  content: '·';
+  content: '|';
   color: var(--text-muted);
   margin-right: var(--space-1);
 }
