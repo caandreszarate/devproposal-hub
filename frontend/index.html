@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="styles/form.css">
   <link rel="stylesheet" href="styles/dashboard.css">
   <link rel="stylesheet" href="styles/animations.css">
+  <link rel="stylesheet" href="styles/print.css">
 </head>
 <body>
 
@@ -559,6 +560,44 @@
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════
+     MODAL PLAN DE PROYECTO
+═══════════════════════════════════════════════════════ -->
+<div id="plan-modal" role="dialog" aria-modal="true" aria-labelledby="plan-modal-title">
+  <div id="plan-modal-overlay"></div>
+  <div class="plan-modal-panel">
+    <div class="plan-modal-header">
+      <div>
+        <div class="plan-modal-eyebrow">Plan de Proyecto</div>
+        <h2 id="plan-modal-title" class="plan-modal-title">Plan generado automáticamente</h2>
+        <span class="plan-modal-project-name" id="plan-modal-project-name"></span>
+      </div>
+      <button class="plan-modal-close" id="plan-modal-close" aria-label="Cerrar panel de plan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="plan-modal-body" id="plan-modal-body">
+      <!-- Contenido generado dinámicamente por planner.js -->
+    </div>
+    <div class="plan-modal-footer">
+      <button class="btn btn-ghost" id="plan-modal-close-footer">Cerrar</button>
+      <button class="btn btn-plan" id="btn-download-pdf">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Descargar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor del reporte — visible solo al imprimir -->
+<div id="print-report" aria-hidden="true"></div>
+
 </main>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -618,20 +657,24 @@
   })();
 </script>
 
-<!-- Script para el PIN del evaluador (exponer loadPendingList globalmente) -->
+<!-- Script para el PIN del evaluador y el plan de proyecto -->
 <script type="module">
   import { initEvaluator, loadPendingList } from './js/evaluator.js';
+  import { closePlanModal } from './js/planner.js';
 
   // Manejar el PIN y mostrar el panel
-  const pinForm = document.getElementById('pin-form');
   const lock    = document.getElementById('eval-lock');
   const content = document.getElementById('evaluator-content');
 
   // La validación del PIN se maneja en evaluator.js (setupPinProtection)
-  // Este listener solo controla la visibilidad del panel tras el desbloqueo
   document.addEventListener('evalUnlocked', () => {
     lock.style.display    = 'none';
     content.style.display = 'grid';
+  });
+
+  // Cerrar modal plan con tecla Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePlanModal();
   });
 
   window.loadPendingList = loadPendingList;
