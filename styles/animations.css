@@ -1,0 +1,194 @@
+/* ============================================================
+   animations.css — Keyframes, transiciones, scroll animations
+   ============================================================ */
+
+/* ── TOAST ── */
+@keyframes toast-in {
+  from { opacity: 0; transform: translateX(100%) scale(0.9); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: translateX(0) scale(1); }
+  to   { opacity: 0; transform: translateX(100%) scale(0.9); }
+}
+
+/* ── SKELETON ── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── HERO dot ── */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(1.5); }
+}
+
+/* ── HERO PARTICLES ── */
+@keyframes float-up {
+  from { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+  to   { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translate(0, 0); }
+  25%       { transform: translate(20px, -15px); }
+  50%       { transform: translate(-10px, -30px); }
+  75%       { transform: translate(15px, -10px); }
+}
+
+/* ── FORM STEPS ── */
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes step-out {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(-24px); }
+}
+
+/* Transición de paso hacia atrás */
+@keyframes step-in-reverse {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── LISTAS DINÁMICAS ── */
+@keyframes item-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes item-out {
+  from { opacity: 1; transform: translateX(0); max-height: 60px; }
+  to   { opacity: 0; transform: translateX(20px); max-height: 0; }
+}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ── FADE IN ── */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in     { animation: fade-in 0.5s ease forwards; }
+.animate-fade-in-up  { animation: fade-in-up 0.5s ease forwards; }
+.animate-fade-in-down { animation: fade-in-down 0.5s ease forwards; }
+
+/* ── SCALE IN (modales, cards) ── */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* ── SPIN (loaders) ── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin { animation: spin 0.8s linear infinite; }
+
+/* ── BOUNCE ── */
+@keyframes bounce-in {
+  0%   { transform: scale(0); }
+  60%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+.animate-bounce-in { animation: bounce-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* ── WAVE (progreso indeterminado) ── */
+@keyframes wave {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ── SCORE NUMBER COUNT-UP ── */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px) scale(0.8); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-count { animation: count-up 0.5s ease forwards; }
+
+/* ── GLOW PULSE ── */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(108, 99, 255, 0.2); }
+  50%       { box-shadow: 0 0 40px rgba(108, 99, 255, 0.5); }
+}
+.animate-glow { animation: glow-pulse 2s ease infinite; }
+
+/* ── Typing cursor ── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.cursor { animation: blink 1s step-end infinite; }
+
+/* ── HERO content entrada ── */
+.hero__content > * {
+  animation: fade-in-up 0.7s ease both;
+}
+.hero__content > *:nth-child(1) { animation-delay: 0.1s; }
+.hero__content > *:nth-child(2) { animation-delay: 0.2s; }
+.hero__content > *:nth-child(3) { animation-delay: 0.35s; }
+.hero__content > *:nth-child(4) { animation-delay: 0.5s; }
+.hero__content > *:nth-child(5) { animation-delay: 0.65s; }
+
+/* ── Loader spinner ── */
+.loader {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── Progress bar de form ── */
+.form-progress-bar {
+  height: 3px;
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-bottom: var(--space-8);
+}
+
+.form-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  border-radius: var(--radius-full);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}

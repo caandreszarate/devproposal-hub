@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="DevProposal Hub — Plataforma para proponer, estandarizar y evaluar proyectos de software en equipo.">
+  <meta name="theme-color" content="#6C63FF">
+
+  <!-- Open Graph -->
+  <meta property="og:title"       content="DevProposal Hub">
+  <meta property="og:description" content="Convierte tu idea en un proyecto real. Guía interactiva para proponer y evaluar proyectos de software.">
+  <meta property="og:type"        content="website">
+
+  <title>DevProposal Hub — Propuestas de Software</title>
+
+  <!-- Fonts (preconnect para velocidad) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/form.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link rel="stylesheet" href="styles/animations.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════════════════ -->
+<header>
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <div class="container navbar__inner">
+      <a href="#hero" class="navbar__logo" aria-label="DevProposal Hub — Inicio">
+        <div class="navbar__logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+          </svg>
+        </div>
+        <span class="navbar__logo-text">DevProposal <span class="text-gradient">Hub</span></span>
+      </a>
+
+      <nav class="navbar__nav" aria-label="Secciones">
+        <a href="#guide-section"     class="navbar__link">Guía</a>
+        <a href="#form-section"      class="navbar__link">Proponer</a>
+        <a href="#dashboard-section" class="navbar__link">Propuestas</a>
+        <a href="#evaluator-section" class="navbar__link">Evaluar</a>
+      </nav>
+
+      <div class="navbar__actions">
+        <div id="server-status" aria-live="polite"></div>
+        <button class="theme-toggle" id="theme-toggle" aria-label="Cambiar tema claro/oscuro">
+          <span id="theme-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </span>
+        </button>
+        <a href="#form-section" class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Nueva propuesta
+        </a>
+        <button class="navbar__hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════════════════ -->
+<section id="hero" class="hero" aria-labelledby="hero-title">
+  <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
+  <div class="hero__gradient" aria-hidden="true"></div>
+
+  <div class="container">
+    <div class="hero__content">
+      <div class="hero__eyebrow" aria-label="Metodología spec-driven">
+        <span class="dot" aria-hidden="true"></span>
+        Spec-Driven Development
+      </div>
+
+      <h1 class="hero__title" id="hero-title">
+        Convierte tu <span class="text-gradient">idea</span><br>
+        en un proyecto real
+      </h1>
+
+      <p class="hero__subtitle">
+        Una guía interactiva y estándar unificado para que cualquier miembro del equipo
+        proponga proyectos de software con criterios claros de viabilidad y evaluación.
+      </p>
+
+      <div class="hero__actions">
+        <button class="btn btn-primary btn-lg" id="cta-propose" aria-label="Ir al formulario de propuesta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Proponer un proyecto
+        </button>
+        <button class="btn btn-outline btn-lg" id="cta-dashboard" aria-label="Ver propuestas existentes">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+          </svg>
+          Ver propuestas
+        </button>
+      </div>
+
+      <div class="hero__stats" aria-label="Estadísticas del sistema">
+        <div class="hero__stat-item">
+          <span class="hero__stat-number" id="stat-total">—</span>
+          <span class="hero__stat-label">Propuestas</span>
+        </div>
+        <div class="hero__stat-item">
+          <span class="hero__stat-number" id="stat-approved">—</span>
+          <span class="hero__stat-label">Aprobadas</span>
+        </div>
+        <div class="hero__stat-item">
+          <span class="hero__stat-number" id="stat-pending">—</span>
+          <span class="hero__stat-label">Pendientes</span>
+        </div>
+        <div class="hero__stat-item">
+          <span class="hero__stat-number" id="stat-avg-score">—</span>
+          <span class="hero__stat-label">Score promedio</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     GUÍA
+═══════════════════════════════════════════════════════ -->
+<section id="guide-section" class="section" aria-labelledby="guide-title">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">¿Cómo funciona?</span>
+      <h2 id="guide-title">Tu guía para proponer un proyecto</h2>
+      <p>Sigue estos 5 pasos para estructurar una propuesta sólida que el equipo pueda evaluar con criterios objetivos.</p>
+    </div>
+
+    <div class="guide__grid">
+      <div class="card guide-card reveal reveal-delay-1">
+        <div class="guide-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        </div>
+        <span class="guide-card__step">Paso 1</span>
+        <h4>Identificación</h4>
+        <p>Nombre del proyecto, proponente, equipo y tipo. La base de cualquier propuesta bien documentada.</p>
+      </div>
+
+      <div class="card guide-card reveal reveal-delay-2">
+        <div class="guide-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <span class="guide-card__step">Paso 2</span>
+        <h4>El Problema</h4>
+        <p>Define claramente qué dolor resuelves, a quién afecta y qué tan urgente es. Sin problema claro, no hay proyecto.</p>
+      </div>
+
+      <div class="card guide-card reveal reveal-delay-3">
+        <div class="guide-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+          </svg>
+        </div>
+        <span class="guide-card__step">Paso 3</span>
+        <h4>La Solución</h4>
+        <p>Describe tu propuesta, el stack tecnológico y las funcionalidades clave del MVP.</p>
+      </div>
+
+      <div class="card guide-card reveal reveal-delay-4">
+        <div class="guide-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="16"/>
+          </svg>
+        </div>
+        <span class="guide-card__step">Paso 4</span>
+        <h4>Viabilidad</h4>
+        <p>Tiempo, equipo, habilidades, riesgos y presupuesto. Define los recursos reales que necesita el proyecto.</p>
+      </div>
+
+      <div class="card guide-card reveal reveal-delay-5">
+        <div class="guide-card__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <span class="guide-card__step">Paso 5</span>
+        <h4>Revisión y Envío</h4>
+        <p>Revisa tu propuesta, verifica tu score de completitud y envíala para evaluación del equipo.</p>
+      </div>
+    </div>
+
+    <!-- Acordeones de buenas prácticas -->
+    <div class="reveal" style="max-width:760px;margin:0 auto;">
+      <h3 style="margin-bottom:var(--space-6);text-align:center;">Buenas prácticas por sección</h3>
+      <div class="accordion" role="list">
+
+        <div class="accordion-item" role="listitem">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-1">
+            🔍 Cómo describir un buen problema
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="accordion-content" id="acc-1">
+            <ul>
+              <li>Usa datos concretos: "El proceso toma 3 horas manualmente" es mejor que "es lento".</li>
+              <li>Identifica exactamente a quién afecta: área, rol, número de personas.</li>
+              <li>Describe qué pasa si NO se resuelve: costo, pérdida de tiempo, errores.</li>
+              <li>Evita saltarte al "cómo" — primero define el "qué" y el "por qué".</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item" role="listitem">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-2">
+            💡 Cómo definir una buena solución
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="accordion-content" id="acc-2">
+            <ul>
+              <li>Define el MVP mínimo viable: ¿qué es lo mínimo que resuelve el problema?</li>
+              <li>Justifica el stack tecnológico elegido con razones técnicas o de equipo.</li>
+              <li>Las funcionalidades deben ser verbos + sustantivos: "Registrar usuarios", "Generar reporte".</li>
+              <li>Diferencia lo que va en MVP vs lo que va en fases posteriores.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item" role="listitem">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-3">
+            📊 Cómo evaluar la viabilidad
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="accordion-content" id="acc-3">
+            <ul>
+              <li>Sé conservador con los tiempos: duplica tu estimación inicial como regla de oro.</li>
+              <li>Lista riesgos técnicos Y humanos: disponibilidad del equipo, deuda técnica, dependencias externas.</li>
+              <li>Si requiere presupuesto, sé específico: herramientas, licencias, infraestructura.</li>
+              <li>Define claramente qué habilidades son nuevas vs las que ya tiene el equipo.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="accordion-item" role="listitem">
+          <button class="accordion-trigger" aria-expanded="false" aria-controls="acc-4">
+            ✅ Criterios que usan los evaluadores
+            <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="accordion-content" id="acc-4">
+            <ul>
+              <li><strong>Impacto (35%):</strong> ¿Cuántas personas se benefician? ¿Cuánto tiempo/dinero se ahorra?</li>
+              <li><strong>Factibilidad (30%):</strong> ¿El equipo puede ejecutarlo con los recursos actuales?</li>
+              <li><strong>Innovación (20%):</strong> ¿Resuelve el problema de una forma nueva o diferencial?</li>
+              <li><strong>Recursos (15%):</strong> ¿La relación esfuerzo/beneficio es favorable?</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     FORMULARIO MULTI-PASO
+═══════════════════════════════════════════════════════ -->
+<section id="form-section" aria-labelledby="form-title">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Proponer proyecto</span>
+      <h2 id="form-title">Crea tu propuesta</h2>
+      <p>Completa los 5 pasos. Tu borrador se guarda automáticamente.</p>
+    </div>
+
+    <div class="form-wrapper">
+      <!-- Banner de borrador guardado -->
+      <div class="draft-banner" id="draft-banner" style="display:none;" role="alert">
+        <span class="draft-banner__text">
+          📝 Tienes un borrador guardado. ¿Deseas continuar donde lo dejaste?
+        </span>
+        <div class="draft-banner__actions">
+          <button class="btn btn-secondary btn-sm" id="draft-continue">Continuar borrador</button>
+          <button class="btn btn-ghost btn-sm" id="draft-discard">Descartar</button>
+        </div>
+      </div>
+
+      <!-- Stepper -->
+      <nav class="stepper" aria-label="Progreso del formulario" id="stepper">
+        <div class="step-item active" data-step="1">
+          <div class="step-circle" aria-hidden="true">1</div>
+          <span class="step-label">Identificación</span>
+        </div>
+        <div class="step-item" data-step="2">
+          <div class="step-circle" aria-hidden="true">2</div>
+          <span class="step-label">Problema</span>
+        </div>
+        <div class="step-item" data-step="3">
+          <div class="step-circle" aria-hidden="true">3</div>
+          <span class="step-label">Solución</span>
+        </div>
+        <div class="step-item" data-step="4">
+          <div class="step-circle" aria-hidden="true">4</div>
+          <span class="step-label">Viabilidad</span>
+        </div>
+        <div class="step-item" data-step="5">
+          <div class="step-circle" aria-hidden="true">5</div>
+          <span class="step-label">Revisión</span>
+        </div>
+      </nav>
+
+      <!-- Progress bar -->
+      <div class="form-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div class="form-progress-fill" id="form-progress-fill" style="width:0%;"></div>
+      </div>
+
+      <!-- Card del formulario -->
+      <div class="form-card" id="form-card">
+        <div class="form-card__header">
+          <div class="form-card__header-icon" aria-hidden="true" id="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="form-card__title" id="step-title">Identificación del proyecto</h3>
+            <p class="form-card__subtitle" id="step-subtitle">
+              Comienza con los datos básicos de tu propuesta
+            </p>
+          </div>
+          <span class="text-muted text-mono" id="step-counter" style="margin-left:auto;font-size:var(--text-sm);">Paso 1 de 5</span>
+        </div>
+
+        <!-- Cuerpo del formulario (renderizado por JS) -->
+        <div class="form-card__body" id="form-body">
+          <!-- JS renderiza aquí -->
+        </div>
+
+        <!-- Navegación -->
+        <div class="form-nav">
+          <span class="form-nav__progress" id="nav-progress"></span>
+          <div style="display:flex;gap:var(--space-3);align-items:center;">
+            <button class="btn btn-outline" id="btn-prev" style="display:none;" aria-label="Paso anterior">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              Anterior
+            </button>
+            <button class="btn btn-primary" id="btn-next" aria-label="Siguiente paso">
+              Siguiente
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+            <button class="btn btn-primary" id="btn-submit" style="display:none;" aria-label="Enviar propuesta">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Enviar propuesta
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     DASHBOARD DE PROPUESTAS
+═══════════════════════════════════════════════════════ -->
+<section id="dashboard-section" aria-labelledby="dashboard-title">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Propuestas</span>
+      <h2 id="dashboard-title">Explorar propuestas</h2>
+      <p>Todas las propuestas del equipo en un solo lugar. Filtra, busca y evalúa.</p>
+    </div>
+
+    <!-- Tabs de estado -->
+    <div class="status-tabs" role="tablist" aria-label="Filtrar por estado">
+      <button class="status-tab active" data-status="" role="tab" aria-selected="true">
+        Todas <span class="count">0</span>
+      </button>
+      <button class="status-tab" data-status="pending" role="tab" aria-selected="false">
+        Pendientes <span class="count">0</span>
+      </button>
+      <button class="status-tab" data-status="under_review" role="tab" aria-selected="false">
+        En revisión <span class="count">0</span>
+      </button>
+      <button class="status-tab" data-status="approved" role="tab" aria-selected="false">
+        Aprobadas <span class="count">0</span>
+      </button>
+      <button class="status-tab" data-status="rejected" role="tab" aria-selected="false">
+        Rechazadas <span class="count">0</span>
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="dashboard-filters" role="search">
+      <div class="search-wrapper">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" id="search-input" class="search-input"
+          placeholder="Buscar por nombre, proponente o equipo..."
+          aria-label="Buscar propuestas">
+      </div>
+
+      <select id="status-filter" class="filter-select" aria-label="Filtrar por estado">
+        <option value="">Todos los estados</option>
+        <option value="pending">Pendientes</option>
+        <option value="under_review">En revisión</option>
+        <option value="approved">Aprobadas</option>
+        <option value="rejected">Rechazadas</option>
+      </select>
+
+      <select id="type-filter" class="filter-select" aria-label="Filtrar por tipo">
+        <option value="">Todos los tipos</option>
+        <option value="web_app">Web App</option>
+        <option value="mobile">Mobile</option>
+        <option value="api">API</option>
+        <option value="data">Data</option>
+        <option value="ai">IA / ML</option>
+        <option value="other">Otro</option>
+      </select>
+
+      <span class="filters-count" id="proposals-count" aria-live="polite">
+        <strong>0</strong> propuestas
+      </span>
+
+      <button class="btn btn-outline btn-sm" onclick="exportAllToJSON()" aria-label="Exportar todas las propuestas a JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Exportar
+      </button>
+    </div>
+
+    <!-- Grid de propuestas -->
+    <div class="proposals-grid" id="proposals-grid" aria-live="polite" aria-label="Lista de propuestas">
+      <!-- JS renderiza aquí -->
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination" id="pagination" aria-label="Paginación"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════
+     PANEL EVALUADOR
+═══════════════════════════════════════════════════════ -->
+<section id="evaluator-section" aria-labelledby="evaluator-title">
+  <div class="container">
+    <div class="section-header reveal">
+      <span class="eyebrow">Evaluadores</span>
+      <h2 id="evaluator-title">Panel de evaluación</h2>
+      <p>Revisa propuestas pendientes, asigna scores y registra tu retroalimentación.</p>
+    </div>
+
+    <!-- Lock overlay con PIN -->
+    <div id="eval-lock" style="text-align:center;padding:var(--space-16) var(--space-8);max-width:400px;margin:0 auto;">
+      <div style="width:72px;height:72px;background:var(--color-primary-glow);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-6);border:2px solid rgba(108,99,255,0.3);">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" stroke-width="2" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0110 0v4"/>
+        </svg>
+      </div>
+      <h3 style="margin-bottom:var(--space-3);">Zona restringida</h3>
+      <p style="margin-bottom:var(--space-6);">Ingresa el PIN de evaluador para acceder al panel.</p>
+      <form id="pin-form">
+        <input type="password" id="pin-input" class="form-control" placeholder="PIN de acceso"
+          maxlength="8" style="text-align:center;letter-spacing:0.3em;font-size:1.2rem;margin-bottom:var(--space-4);"
+          aria-label="PIN de acceso al panel de evaluación" autocomplete="off">
+        <button type="submit" class="btn btn-primary w-full">Acceder</button>
+      </form>
+      <p class="text-muted" style="margin-top:var(--space-4);font-size:var(--text-xs);">PIN demo: 1234</p>
+    </div>
+
+    <!-- Panel principal (visible tras PIN) -->
+    <div class="evaluator-grid" id="evaluator-content" style="display:none;">
+      <!-- Lista de pendientes -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-5);">
+          <h3 style="font-size:var(--text-lg);">Propuestas pendientes</h3>
+          <button class="btn btn-ghost btn-sm" onclick="loadPendingList()" aria-label="Recargar lista">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+              <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+            </svg>
+            Recargar
+          </button>
+        </div>
+        <div class="pending-list" id="pending-list" role="list" aria-label="Lista de propuestas pendientes">
+          <div style="padding:2rem;text-align:center;color:var(--text-muted);font-size:var(--text-sm);">
+            Cargando propuestas...
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulario de evaluación -->
+      <div class="eval-card" id="eval-form-card">
+        <div class="eval-card__placeholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+          </svg>
+          <p>Selecciona una propuesta de la lista para evaluarla.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container footer__inner">
+    <p class="footer__copy">
+      &copy; 2026 <strong>DevProposal Hub</strong> — Construido con
+      <span style="color:var(--color-error);">♥</span> para equipos que creen en las ideas.
+    </p>
+    <nav class="footer__links" aria-label="Links del footer">
+      <a href="#guide-section">Guía</a>
+      <a href="#form-section">Proponer</a>
+      <a href="#dashboard-section">Propuestas</a>
+    </nav>
+  </div>
+</footer>
+
+<!-- Toast container (inyectado por JS) -->
+<div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+<!-- Scripts (ES Modules) -->
+<script type="module" src="js/main.js"></script>
+
+<!-- Health check — script independiente sin módulos para máxima compatibilidad -->
+<script>
+  (function checkApiStatus() {
+    const indicator = document.getElementById('server-status');
+    if (!indicator) return;
+
+    // Mostrar "verificando" mientras espera
+    indicator.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text-muted,#606080);">'
+      + '<span style="width:6px;height:6px;background:currentColor;border-radius:50%;display:inline-block;opacity:0.5;"></span>'
+      + 'Verificando...</span>';
+
+    fetch('http://127.0.0.1:3000/api/health')
+      .then(function(res) {
+        if (res.ok) {
+          indicator.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#2ED573;">'
+            + '<span style="width:6px;height:6px;background:#2ED573;border-radius:50%;display:inline-block;"></span>'
+            + 'API Online</span>';
+        } else {
+          showOffline();
+        }
+      })
+      .catch(function() { showOffline(); });
+
+    function showOffline() {
+      indicator.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#FFB833;">'
+        + '<span style="width:6px;height:6px;background:#FFB833;border-radius:50%;display:inline-block;"></span>'
+        + 'API Offline</span>';
+    }
+  })();
+</script>
+
+<!-- Script para el PIN del evaluador (exponer loadPendingList globalmente) -->
+<script type="module">
+  import { initEvaluator, loadPendingList } from './js/evaluator.js';
+
+  // Manejar el PIN y mostrar el panel
+  const pinForm = document.getElementById('pin-form');
+  const lock    = document.getElementById('eval-lock');
+  const content = document.getElementById('evaluator-content');
+
+  pinForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const val = document.getElementById('pin-input')?.value;
+    if (val === '1234') {
+      lock.style.display    = 'none';
+      content.style.display = 'grid';
+      loadPendingList();
+    }
+  });
+
+  window.loadPendingList = loadPendingList;
+</script>
+
+</body>
+</html>
