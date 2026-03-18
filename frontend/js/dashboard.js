@@ -212,52 +212,111 @@ export function renderProposalModal(p) {
     </div>` : ''}
   `;
 
+  const statusLabels = { under_review: 'En revisión', approved: 'Aprobada', rejected: 'Rechazada' };
+
   const footerHTML = `
-    <button class="btn btn-outline btn-sm" onclick="window.print()" aria-label="Exportar a PDF">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      PDF
-    </button>
-    <button class="btn btn-ghost btn-sm" id="modal-btn-review"  data-proposal-id="${p._id}" data-new-status="under_review">🔵 En revisión</button>
-    <button class="btn btn-success btn-sm" id="modal-btn-approve" data-proposal-id="${p._id}" data-new-status="approved">✅ Aprobar</button>
-    <button class="btn btn-danger btn-sm"  id="modal-btn-reject"  data-proposal-id="${p._id}" data-new-status="rejected">❌ Rechazar</button>
-    <button class="btn btn-primary btn-sm" id="modal-btn-close">Cerrar</button>
+    <!-- Botones normales -->
+    <div id="modal-footer-actions" style="display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;width:100%;">
+      <button class="btn btn-outline btn-sm" onclick="window.print()" aria-label="Exportar a PDF">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        PDF
+      </button>
+      <div style="margin-left:auto;display:flex;gap:var(--space-2);flex-wrap:wrap;">
+        <button class="btn btn-ghost btn-sm eval-action-btn" data-proposal-id="${p._id}" data-new-status="under_review">🔵 En revisión</button>
+        <button class="btn btn-success btn-sm eval-action-btn" data-proposal-id="${p._id}" data-new-status="approved">✅ Aprobar</button>
+        <button class="btn btn-danger btn-sm eval-action-btn"  data-proposal-id="${p._id}" data-new-status="rejected">❌ Rechazar</button>
+        <button class="btn btn-primary btn-sm" id="modal-btn-close">Cerrar</button>
+      </div>
+    </div>
+
+    <!-- Formulario PIN (oculto hasta que se pulse un botón de estado) -->
+    <div id="modal-pin-form" style="display:none;width:100%;">
+      <div style="background:var(--bg-elevated);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:var(--space-4) var(--space-5);">
+        <p id="modal-pin-label" style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);margin-bottom:var(--space-3);"></p>
+        <div style="display:flex;gap:var(--space-2);align-items:center;flex-wrap:wrap;">
+          <input id="modal-pin-input" type="password" class="form-control" placeholder="PIN de evaluador"
+            maxlength="20" autocomplete="off"
+            style="flex:1;min-width:160px;letter-spacing:0.15em;font-size:var(--text-sm);">
+          <p id="modal-pin-error" style="display:none;width:100%;font-size:var(--text-xs);color:var(--color-error);margin-top:var(--space-1);"></p>
+          <button class="btn btn-primary btn-sm" id="modal-pin-confirm">Confirmar</button>
+          <button class="btn btn-ghost btn-sm" id="modal-pin-cancel">Cancelar</button>
+        </div>
+      </div>
+    </div>
   `;
 
   const overlay = openModal(escapeHtml(p.projectName), bodyHTML, footerHTML);
+
+  const actionsDiv = overlay.querySelector('#modal-footer-actions');
+  const pinForm    = overlay.querySelector('#modal-pin-form');
+  const pinInput   = overlay.querySelector('#modal-pin-input');
+  const pinLabel   = overlay.querySelector('#modal-pin-label');
+  const pinError   = overlay.querySelector('#modal-pin-error');
+
+  let pendingStatus   = null;
+  let pendingProposalId = null;
 
   // Cerrar
   overlay.querySelector('#modal-btn-close')?.addEventListener('click', () => {
     import('./ui.js').then(({ closeModal }) => closeModal());
   });
 
-  // Botones de evaluación
-  ['modal-btn-review', 'modal-btn-approve', 'modal-btn-reject'].forEach(btnId => {
-    overlay.querySelector(`#${btnId}`)?.addEventListener('click', async (e) => {
-      const btn       = e.currentTarget;
-      const proposalId = btn.dataset.proposalId;
-      const newStatus  = btn.dataset.newStatus;
-
-      const inputPin = window.prompt('Ingresa el PIN de evaluador para cambiar el estado:');
-      if (inputPin === null) return;
-      if (inputPin !== PIN) {
-        showToast('PIN incorrecto.', 'error');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.textContent = 'Guardando...';
-      try {
-        await updateProposal(proposalId, { status: newStatus });
-        const labels = { under_review: 'En revisión', approved: 'Aprobada', rejected: 'Rechazada' };
-        showToast(`Propuesta marcada como: ${labels[newStatus]}`, 'success');
-        import('./ui.js').then(({ closeModal }) => closeModal());
-        loadProposals();
-        loadStats();
-      } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-        btn.disabled = false;
-      }
+  // Botones de estado → mostrar formulario PIN
+  const actionIcons = { under_review: '🔵', approved: '✅', rejected: '❌' };
+  overlay.querySelectorAll('.eval-action-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pendingStatus    = btn.dataset.newStatus;
+      pendingProposalId = btn.dataset.proposalId;
+      pinLabel.textContent = `${actionIcons[pendingStatus]} Confirmar acción: marcar como "${statusLabels[pendingStatus]}"`;
+      pinError.style.display = 'none';
+      pinError.textContent   = '';
+      pinInput.value = '';
+      actionsDiv.style.display = 'none';
+      pinForm.style.display    = 'block';
+      pinInput.focus();
     });
+  });
+
+  // Cancelar → volver a los botones
+  overlay.querySelector('#modal-pin-cancel')?.addEventListener('click', () => {
+    pinForm.style.display    = 'none';
+    actionsDiv.style.display = 'flex';
+    pendingStatus = null;
+  });
+
+  // Confirmar PIN (botón o Enter)
+  const confirmAction = async () => {
+    if (!pendingStatus) return;
+
+    if (pinInput.value !== PIN) {
+      pinError.textContent   = 'PIN incorrecto. Inténtalo de nuevo.';
+      pinError.style.display = 'block';
+      pinInput.value = '';
+      pinInput.focus();
+      return;
+    }
+
+    const confirmBtn = overlay.querySelector('#modal-pin-confirm');
+    confirmBtn.disabled    = true;
+    confirmBtn.textContent = 'Guardando...';
+
+    try {
+      await updateProposal(pendingProposalId, { status: pendingStatus });
+      showToast(`Propuesta marcada como: ${statusLabels[pendingStatus]}`, 'success');
+      import('./ui.js').then(({ closeModal }) => closeModal());
+      loadProposals();
+      loadStats();
+    } catch (err) {
+      showToast('Error: ' + err.message, 'error');
+      confirmBtn.disabled    = false;
+      confirmBtn.textContent = 'Confirmar';
+    }
+  };
+
+  overlay.querySelector('#modal-pin-confirm')?.addEventListener('click', confirmAction);
+  overlay.querySelector('#modal-pin-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') confirmAction();
+    if (e.key === 'Escape') overlay.querySelector('#modal-pin-cancel')?.click();
   });
 }
 
