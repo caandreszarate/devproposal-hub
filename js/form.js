@@ -277,7 +277,7 @@ function renderStep3() {
       </div>
 
       <div class="form-group" style="margin-top:var(--space-6);">
-        <label class="form-label">Funcionalidades clave del MVP</label>
+        <label class="form-label">Funcionalidades clave del Proyecto</label>
         <div class="dynamic-list" id="features-list">${featuresHTML}</div>
         <button type="button" class="add-item-btn" id="add-feature">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -286,9 +286,9 @@ function renderStep3() {
       </div>
 
       <div class="form-group" style="margin-top:var(--space-5);">
-        <label class="form-label" for="mvpScope">Alcance del MVP</label>
+        <label class="form-label" for="mvpScope">Alcance del Proyecto</label>
         <textarea id="mvpScope" name="mvpScope" class="form-control"
-          placeholder="¿Qué incluye la versión mínima viable? ¿Qué queda fuera del alcance inicial?"
+          placeholder="¿Qué incluye este proyecto? ¿Qué queda fuera del alcance inicial?"
           rows="3" maxlength="1000"></textarea>
       </div>
     </div>`;
@@ -391,9 +391,13 @@ function renderStep5() {
 
       ${buildReviewHTML()}
 
-      <div class="form-group" style="margin-top:var(--space-6);">
-        <label class="checkbox-label ${false ? 'selected' : ''}" id="lbl-confirm" style="border-radius:var(--radius-lg);padding:var(--space-4);">
+      <div class="form-group confirm-block" style="margin-top:var(--space-6);">
+        <p class="confirm-block__hint">
+          ✅ Último paso — revisa el resumen y confirma para enviar tu propuesta
+        </p>
+        <label class="checkbox-label confirm-check-label" id="lbl-confirm">
           <input type="checkbox" id="confirm-check" aria-required="true">
+          <span class="confirm-check-icon">☐</span>
           Confirmo que la información es correcta y está lista para revisión.
         </label>
       </div>
@@ -629,8 +633,10 @@ function setupStepListeners(step) {
     }, 100);
 
     document.getElementById('confirm-check')?.addEventListener('change', e => {
-      const lbl = document.getElementById('lbl-confirm');
-      if (lbl) lbl.classList.toggle('selected', e.target.checked);
+      const lbl  = document.getElementById('lbl-confirm');
+      const icon = lbl?.querySelector('.confirm-check-icon');
+      if (lbl)  lbl.classList.toggle('selected', e.target.checked);
+      if (icon) icon.textContent = e.target.checked ? '☑' : '☐';
     });
   }
 }
