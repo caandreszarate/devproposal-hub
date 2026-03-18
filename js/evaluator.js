@@ -36,8 +36,8 @@ function setupPinProtection() {
     e.preventDefault();
     const inputPin = document.getElementById('pin-input')?.value;
     if (inputPin === PIN) {
-      lockOverlay.style.display = 'none';
       evalState.unlocked = true;
+      document.dispatchEvent(new CustomEvent('evalUnlocked'));
       loadPendingList();
     } else {
       showToast('PIN incorrecto. Inténtalo de nuevo.', 'error');

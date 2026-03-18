@@ -499,11 +499,10 @@
       <p style="margin-bottom:var(--space-6);">Ingresa el PIN de evaluador para acceder al panel.</p>
       <form id="pin-form">
         <input type="password" id="pin-input" class="form-control" placeholder="PIN de acceso"
-          maxlength="8" style="text-align:center;letter-spacing:0.3em;font-size:1.2rem;margin-bottom:var(--space-4);"
+          maxlength="20" style="text-align:center;letter-spacing:0.1em;font-size:1.2rem;margin-bottom:var(--space-4);"
           aria-label="PIN de acceso al panel de evaluación" autocomplete="off">
         <button type="submit" class="btn btn-primary w-full">Acceder</button>
       </form>
-      <p class="text-muted" style="margin-top:var(--space-4);font-size:var(--text-xs);">PIN demo: 1234</p>
     </div>
 
     <!-- Panel principal (visible tras PIN) -->
@@ -605,14 +604,11 @@
   const lock    = document.getElementById('eval-lock');
   const content = document.getElementById('evaluator-content');
 
-  pinForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const val = document.getElementById('pin-input')?.value;
-    if (val === '1234') {
-      lock.style.display    = 'none';
-      content.style.display = 'grid';
-      loadPendingList();
-    }
+  // La validación del PIN se maneja en evaluator.js (setupPinProtection)
+  // Este listener solo controla la visibilidad del panel tras el desbloqueo
+  document.addEventListener('evalUnlocked', () => {
+    lock.style.display    = 'none';
+    content.style.display = 'grid';
   });
 
   window.loadPendingList = loadPendingList;
