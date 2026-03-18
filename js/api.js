@@ -2,7 +2,7 @@
    api.js — Fetch wrapper y métodos de la API REST
    ============================================================ */
 
-export const BASE_URL = 'http://127.0.0.1:3000/api';
+export const BASE_URL = 'https://gleaming-adventure-production-9172.up.railway.app/api';
 
 /**
  * Fetch wrapper con manejo centralizado de errores.

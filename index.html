@@ -576,7 +576,7 @@
       + '<span style="width:6px;height:6px;background:currentColor;border-radius:50%;display:inline-block;opacity:0.5;"></span>'
       + 'Verificando...</span>';
 
-    fetch('http://127.0.0.1:3000/api/health')
+    fetch('https://gleaming-adventure-production-9172.up.railway.app/api/health')
       .then(function(res) {
         if (res.ok) {
           indicator.innerHTML = '<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:#2ED573;">'
