@@ -126,7 +126,9 @@ export function renderEvaluationForm(proposal) {
   card.innerHTML = `
     <div style="margin-bottom:var(--space-6);">
       <h4 style="font-size:var(--text-base);margin-bottom:var(--space-2);">${escapeHtml(proposal.projectName)}</h4>
-      <p style="font-size:var(--text-sm);color:var(--text-muted);">${escapeHtml(proposal.proposerName)}${proposal.team ? ` · ${escapeHtml(proposal.team)}` : ''}</p>
+      <p style="font-size:var(--text-sm);color:var(--text-muted);">${escapeHtml(proposal.proposerName)}</p>
+      ${proposal.email ? `<p style="font-size:var(--text-sm);color:var(--text-muted);margin-top:var(--space-1);">✉️ <a href="mailto:${escapeHtml(proposal.email)}" style="color:var(--color-primary);">${escapeHtml(proposal.email)}</a></p>` : ''}
+      ${proposal.phoneNumber ? `<p style="font-size:var(--text-sm);color:var(--text-muted);margin-top:var(--space-1);">📞 ${proposal.phoneCode ? escapeHtml(proposal.phoneCode) + ' ' : ''}${escapeHtml(proposal.phoneNumber)}</p>` : ''}
     </div>
 
     <div class="eval-criteria" id="eval-criteria">

@@ -102,7 +102,7 @@ export function renderProposalCard(p) {
       <div class="proposal-card__meta">
         <div class="proposal-card__proposer">
           <div class="proposer-avatar" aria-hidden="true">${initials}</div>
-          <span>${escapeHtml(p.proposerName)}${p.team ? ` · ${escapeHtml(p.team)}` : ''}</span>
+          <span>${escapeHtml(p.proposerName)}</span>
         </div>
         <span class="badge" style="background:var(--bg-elevated);color:var(--text-muted);font-size:11px;">${getTypeLabel(p.projectType)}</span>
       </div>
@@ -147,8 +147,14 @@ export function renderProposalModal(p) {
 
     <div class="proposal-detail__section">
       <div class="proposal-detail__label">Proponente</div>
-      <div class="proposal-detail__value">${escapeHtml(p.proposerName)}${p.team ? ` · ${escapeHtml(p.team)}` : ''}</div>
+      <div class="proposal-detail__value">${escapeHtml(p.proposerName)}</div>
     </div>
+
+    ${p.presentationDate ? `
+    <div class="proposal-detail__section">
+      <div class="proposal-detail__label">Fecha de presentación</div>
+      <div class="proposal-detail__value">${new Date(p.presentationDate + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+    </div>` : ''}
 
     <div class="proposal-detail__section">
       <div class="proposal-detail__label">Problema</div>

@@ -9,6 +9,13 @@ const createProposalSchema = Joi.object({
   proposerName:        Joi.string().trim().required().messages({
     'string.empty': 'El nombre del proponente es requerido'
   }),
+  email:               Joi.string().trim().email({ tlds: { allow: false } }).required().messages({
+    'string.empty': 'El correo electrónico es requerido',
+    'string.email': 'Ingresa un correo electrónico válido'
+  }),
+  phoneCode:           Joi.string().trim().allow('').optional(),
+  phoneNumber:         Joi.string().trim().allow('').optional(),
+  presentationDate:    Joi.date().optional(),
   team:                Joi.string().trim().allow('').optional(),
   projectType:         Joi.string().valid('web_app','mobile','api','data','ai','other').required().messages({
     'any.only': 'Tipo de proyecto no válido'

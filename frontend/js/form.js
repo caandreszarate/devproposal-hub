@@ -12,7 +12,8 @@ const TOTAL_STEPS = 5;
 export let formState = {
   step: 1,
   data: {
-    projectName: '', proposerName: '', team: '', projectType: '',
+    projectName: '', proposerName: '', email: '', phoneCode: '', phoneNumber: '',
+    presentationDate: '', projectType: '',
     problemDescription: '', targetUsers: '', existingSolutions: false,
     existingDetails: '', urgencyLevel: 3,
     solutionDescription: '', techStack: [], keyFeatures: [], mvpScope: '',
@@ -20,6 +21,75 @@ export let formState = {
     expectedBenefit: '', requiresBudget: false, budgetAmount: 0
   }
 };
+
+// Lista de indicativos telefónicos por país
+const PHONE_CODES = [
+  {code:'+93',country:'Afganistán'},{code:'+355',country:'Albania'},{code:'+213',country:'Argelia'},
+  {code:'+376',country:'Andorra'},{code:'+244',country:'Angola'},{code:'+54',country:'Argentina'},
+  {code:'+374',country:'Armenia'},{code:'+61',country:'Australia'},{code:'+43',country:'Austria'},
+  {code:'+994',country:'Azerbaiyán'},{code:'+1242',country:'Bahamas'},{code:'+973',country:'Baréin'},
+  {code:'+880',country:'Bangladés'},{code:'+375',country:'Bielorrusia'},{code:'+32',country:'Bélgica'},
+  {code:'+501',country:'Belice'},{code:'+229',country:'Benín'},{code:'+975',country:'Bután'},
+  {code:'+591',country:'Bolivia'},{code:'+387',country:'Bosnia y Herzegovina'},{code:'+267',country:'Botsuana'},
+  {code:'+55',country:'Brasil'},{code:'+673',country:'Brunéi'},{code:'+359',country:'Bulgaria'},
+  {code:'+226',country:'Burkina Faso'},{code:'+257',country:'Burundi'},{code:'+238',country:'Cabo Verde'},
+  {code:'+855',country:'Camboya'},{code:'+237',country:'Camerún'},{code:'+1',country:'Canadá'},
+  {code:'+236',country:'Rep. Centroafricana'},{code:'+235',country:'Chad'},{code:'+56',country:'Chile'},
+  {code:'+86',country:'China'},{code:'+57',country:'Colombia'},{code:'+269',country:'Comoras'},
+  {code:'+242',country:'Congo'},{code:'+506',country:'Costa Rica'},{code:'+385',country:'Croacia'},
+  {code:'+53',country:'Cuba'},{code:'+357',country:'Chipre'},{code:'+420',country:'República Checa'},
+  {code:'+45',country:'Dinamarca'},{code:'+253',country:'Yibuti'},{code:'+1809',country:'República Dominicana'},
+  {code:'+593',country:'Ecuador'},{code:'+20',country:'Egipto'},{code:'+503',country:'El Salvador'},
+  {code:'+240',country:'Guinea Ecuatorial'},{code:'+291',country:'Eritrea'},{code:'+372',country:'Estonia'},
+  {code:'+251',country:'Etiopía'},{code:'+679',country:'Fiyi'},{code:'+358',country:'Finlandia'},
+  {code:'+33',country:'Francia'},{code:'+241',country:'Gabón'},{code:'+220',country:'Gambia'},
+  {code:'+995',country:'Georgia'},{code:'+49',country:'Alemania'},{code:'+233',country:'Ghana'},
+  {code:'+30',country:'Grecia'},{code:'+502',country:'Guatemala'},{code:'+224',country:'Guinea'},
+  {code:'+245',country:'Guinea-Bisáu'},{code:'+592',country:'Guyana'},{code:'+509',country:'Haití'},
+  {code:'+504',country:'Honduras'},{code:'+36',country:'Hungría'},{code:'+354',country:'Islandia'},
+  {code:'+91',country:'India'},{code:'+62',country:'Indonesia'},{code:'+98',country:'Irán'},
+  {code:'+964',country:'Irak'},{code:'+353',country:'Irlanda'},{code:'+972',country:'Israel'},
+  {code:'+39',country:'Italia'},{code:'+1876',country:'Jamaica'},{code:'+81',country:'Japón'},
+  {code:'+962',country:'Jordania'},{code:'+7',country:'Kazajistán'},{code:'+254',country:'Kenia'},
+  {code:'+686',country:'Kiribati'},{code:'+383',country:'Kosovo'},{code:'+965',country:'Kuwait'},
+  {code:'+996',country:'Kirguistán'},{code:'+856',country:'Laos'},{code:'+371',country:'Letonia'},
+  {code:'+961',country:'Líbano'},{code:'+266',country:'Lesoto'},{code:'+231',country:'Liberia'},
+  {code:'+218',country:'Libia'},{code:'+423',country:'Liechtenstein'},{code:'+370',country:'Lituania'},
+  {code:'+352',country:'Luxemburgo'},{code:'+261',country:'Madagascar'},{code:'+265',country:'Malaui'},
+  {code:'+60',country:'Malasia'},{code:'+960',country:'Maldivas'},{code:'+223',country:'Malí'},
+  {code:'+356',country:'Malta'},{code:'+692',country:'Islas Marshall'},{code:'+222',country:'Mauritania'},
+  {code:'+230',country:'Mauricio'},{code:'+52',country:'México'},{code:'+691',country:'Micronesia'},
+  {code:'+373',country:'Moldavia'},{code:'+377',country:'Mónaco'},{code:'+976',country:'Mongolia'},
+  {code:'+382',country:'Montenegro'},{code:'+212',country:'Marruecos'},{code:'+258',country:'Mozambique'},
+  {code:'+95',country:'Myanmar'},{code:'+264',country:'Namibia'},{code:'+674',country:'Nauru'},
+  {code:'+977',country:'Nepal'},{code:'+31',country:'Países Bajos'},{code:'+64',country:'Nueva Zelanda'},
+  {code:'+505',country:'Nicaragua'},{code:'+227',country:'Níger'},{code:'+234',country:'Nigeria'},
+  {code:'+850',country:'Corea del Norte'},{code:'+389',country:'Macedonia del Norte'},{code:'+47',country:'Noruega'},
+  {code:'+968',country:'Omán'},{code:'+92',country:'Pakistán'},{code:'+680',country:'Palaos'},
+  {code:'+970',country:'Palestina'},{code:'+507',country:'Panamá'},{code:'+675',country:'Papúa Nueva Guinea'},
+  {code:'+595',country:'Paraguay'},{code:'+51',country:'Perú'},{code:'+63',country:'Filipinas'},
+  {code:'+48',country:'Polonia'},{code:'+351',country:'Portugal'},{code:'+974',country:'Catar'},
+  {code:'+40',country:'Rumanía'},{code:'+7',country:'Rusia'},{code:'+250',country:'Ruanda'},
+  {code:'+1869',country:'San Cristóbal y Nieves'},{code:'+1758',country:'Santa Lucía'},
+  {code:'+1784',country:'San Vicente'},{code:'+685',country:'Samoa'},{code:'+378',country:'San Marino'},
+  {code:'+239',country:'Santo Tomé y Príncipe'},{code:'+966',country:'Arabia Saudita'},
+  {code:'+221',country:'Senegal'},{code:'+381',country:'Serbia'},{code:'+248',country:'Seychelles'},
+  {code:'+232',country:'Sierra Leona'},{code:'+65',country:'Singapur'},{code:'+421',country:'Eslovaquia'},
+  {code:'+386',country:'Eslovenia'},{code:'+677',country:'Islas Salomón'},{code:'+252',country:'Somalia'},
+  {code:'+27',country:'Sudáfrica'},{code:'+82',country:'Corea del Sur'},{code:'+211',country:'Sudán del Sur'},
+  {code:'+34',country:'España'},{code:'+94',country:'Sri Lanka'},{code:'+249',country:'Sudán'},
+  {code:'+597',country:'Surinam'},{code:'+268',country:'Esuatini'},{code:'+46',country:'Suecia'},
+  {code:'+41',country:'Suiza'},{code:'+963',country:'Siria'},{code:'+886',country:'Taiwán'},
+  {code:'+992',country:'Tayikistán'},{code:'+255',country:'Tanzania'},{code:'+66',country:'Tailandia'},
+  {code:'+670',country:'Timor Oriental'},{code:'+228',country:'Togo'},{code:'+676',country:'Tonga'},
+  {code:'+1868',country:'Trinidad y Tobago'},{code:'+216',country:'Túnez'},{code:'+90',country:'Turquía'},
+  {code:'+993',country:'Turkmenistán'},{code:'+688',country:'Tuvalu'},{code:'+256',country:'Uganda'},
+  {code:'+380',country:'Ucrania'},{code:'+971',country:'Emiratos Árabes Unidos'},{code:'+44',country:'Reino Unido'},
+  {code:'+1',country:'Estados Unidos'},{code:'+598',country:'Uruguay'},{code:'+998',country:'Uzbekistán'},
+  {code:'+678',country:'Vanuatu'},{code:'+379',country:'Ciudad del Vaticano'},{code:'+58',country:'Venezuela'},
+  {code:'+84',country:'Vietnam'},{code:'+967',country:'Yemen'},{code:'+260',country:'Zambia'},
+  {code:'+263',country:'Zimbabue'}
+];
 
 // ── INIT ──────────────────────────────────────────────────
 export function initForm() {
@@ -47,6 +117,10 @@ export function renderStep(stepNum) {
 
 // ── PASO 1: Identificación ────────────────────────────────
 function renderStep1() {
+  const phoneSelectorHTML = PHONE_CODES.map(p =>
+    `<option value="${p.code}"${p.code === '+57' && !formState.data.phoneCode ? ' selected' : (formState.data.phoneCode === p.code ? ' selected' : '')}>${p.code} ${p.country}</option>`
+  ).join('');
+
   return `
     <div class="form-step active" id="step-1">
       <div class="form-row cols-2">
@@ -70,9 +144,8 @@ function renderStep1() {
       </div>
       <div class="form-row cols-2" style="margin-top:var(--space-5);">
         <div class="form-group">
-          <label class="form-label" for="team">Área o equipo</label>
-          <input type="text" id="team" name="team" class="form-control"
-            placeholder="Ej: Equipo Backend, Producto...">
+          <label class="form-label" for="presentationDate">Fecha de presentación</label>
+          <input type="date" id="presentationDate" name="presentationDate" class="form-control">
         </div>
         <div class="form-group" id="grp-projectType">
           <label class="form-label" for="projectType">
@@ -88,6 +161,25 @@ function renderStep1() {
             <option value="other">💡 Otro</option>
           </select>
           <p class="form-error-msg" id="err-projectType">Selecciona el tipo de proyecto.</p>
+        </div>
+      </div>
+      <div class="form-group" id="grp-email" style="margin-top:var(--space-5);">
+        <label class="form-label" for="email">
+          Correo electrónico <span class="required" aria-hidden="true">*</span>
+        </label>
+        <input type="email" id="email" name="email" class="form-control"
+          placeholder="Ej: ana.gonzalez@empresa.com" required aria-required="true" autocomplete="email">
+        <p class="form-error-msg" id="err-email">Ingresa un correo electrónico válido.</p>
+      </div>
+      <div class="form-group" style="margin-top:var(--space-5);">
+        <label class="form-label">Teléfono <span style="font-weight:400;opacity:0.6;font-size:0.85em;">(opcional)</span></label>
+        <div style="display:flex;gap:var(--space-2);">
+          <select id="phoneCode" name="phoneCode" class="form-control" style="width:200px;flex-shrink:0;">
+            <option value="">Indicativo</option>
+            ${phoneSelectorHTML}
+          </select>
+          <input type="tel" id="phoneNumber" name="phoneNumber" class="form-control"
+            placeholder="Ej: 3001234567" autocomplete="tel-national">
         </div>
       </div>
     </div>`;
@@ -317,7 +409,7 @@ function buildReviewHTML() {
       rows: [
         ['Proyecto', d.projectName || '—'],
         ['Proponente', d.proposerName || '—'],
-        ['Equipo', d.team || '—'],
+        ['Presentación', d.presentationDate ? new Date(d.presentationDate + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' }) : '—'],
         ['Tipo', getTypeLabel(d.projectType)]
       ]
     },
@@ -389,11 +481,19 @@ function renderTagChip(value) {
 // ── LISTENERS POR PASO ────────────────────────────────────
 function setupStepListeners(step) {
   if (step === 1) {
-    ['projectName', 'proposerName', 'team'].forEach(id => {
+    ['projectName', 'proposerName', 'email', 'phoneNumber'].forEach(id => {
       document.getElementById(id)?.addEventListener('input', e => {
         formState.data[id] = e.target.value;
         saveToLocalStorage();
       });
+    });
+    document.getElementById('presentationDate')?.addEventListener('change', e => {
+      formState.data.presentationDate = e.target.value;
+      saveToLocalStorage();
+    });
+    document.getElementById('phoneCode')?.addEventListener('change', e => {
+      formState.data.phoneCode = e.target.value;
+      saveToLocalStorage();
     });
     document.getElementById('projectType')?.addEventListener('change', e => {
       formState.data.projectType = e.target.value;
@@ -646,13 +746,15 @@ export function validateStep(step) {
   };
 
   if (step === 1) {
-    const nameOk = d.projectName.trim().length > 0;
-    const propOk = d.proposerName.trim().length > 0;
-    const typeOk = d.projectType !== '';
+    const nameOk  = d.projectName.trim().length > 0;
+    const propOk  = d.proposerName.trim().length > 0;
+    const typeOk  = d.projectType !== '';
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email.trim());
     showError('grp-projectName',  'err-projectName',  !nameOk);
     showError('grp-proposerName', 'err-proposerName', !propOk);
     showError('grp-projectType',  'err-projectType',  !typeOk);
-    valid = nameOk && propOk && typeOk;
+    showError('grp-email',        'err-email',        !emailOk);
+    valid = nameOk && propOk && typeOk && emailOk;
   }
 
   if (step === 2) {
@@ -764,7 +866,8 @@ export async function submitForm() {
     clearDraft();
     // Reset
     formState.data = {
-      projectName: '', proposerName: '', team: '', projectType: '',
+      projectName: '', proposerName: '', email: '', phoneCode: '', phoneNumber: '',
+      presentationDate: '', projectType: '',
       problemDescription: '', targetUsers: '', existingSolutions: false,
       existingDetails: '', urgencyLevel: 3,
       solutionDescription: '', techStack: [], keyFeatures: [], mvpScope: '',
@@ -787,10 +890,14 @@ export async function submitForm() {
 function restoreValues(step) {
   const d = formState.data;
   if (step === 1) {
-    ['projectName', 'proposerName', 'team'].forEach(id => {
+    ['projectName', 'proposerName', 'email', 'phoneNumber'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = d[id] || '';
     });
+    const dateEl = document.getElementById('presentationDate');
+    if (dateEl) dateEl.value = d.presentationDate || '';
+    const codeEl = document.getElementById('phoneCode');
+    if (codeEl) codeEl.value = d.phoneCode || '+57';
     const typeEl = document.getElementById('projectType');
     if (typeEl) typeEl.value = d.projectType || '';
   }
@@ -867,7 +974,8 @@ function checkDraft() {
     document.getElementById('draft-discard')?.addEventListener('click', () => {
       clearDraft();
       formState.data = {
-        projectName: '', proposerName: '', team: '', projectType: '',
+        projectName: '', proposerName: '', email: '', phoneCode: '', phoneNumber: '',
+        presentationDate: '', projectType: '',
         problemDescription: '', targetUsers: '', existingSolutions: false,
         existingDetails: '', urgencyLevel: 3,
         solutionDescription: '', techStack: [], keyFeatures: [], mvpScope: '',

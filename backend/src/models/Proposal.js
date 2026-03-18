@@ -12,10 +12,14 @@ const scoreSchema = new mongoose.Schema({
 
 const proposalSchema = new mongoose.Schema({
   // === Identificación ===
-  projectName:  { type: String, required: true, trim: true, maxlength: 100 },
-  proposerName: { type: String, required: true, trim: true },
-  team:         { type: String, trim: true, default: '' },
-  projectType:  {
+  projectName:       { type: String, required: true, trim: true, maxlength: 100 },
+  proposerName:      { type: String, required: true, trim: true },
+  email:             { type: String, required: true, trim: true, lowercase: true },
+  phoneCode:         { type: String, trim: true, default: '' },
+  phoneNumber:       { type: String, trim: true, default: '' },
+  presentationDate:  { type: Date },
+  team:              { type: String, trim: true, default: '' },
+  projectType:       {
     type: String,
     enum: ['web_app', 'mobile', 'api', 'data', 'ai', 'other'],
     required: true
