@@ -395,21 +395,6 @@
   border-radius: var(--radius-2xl);
   backdrop-filter: var(--glass-blur);
   padding: var(--space-8);
-  max-height: 80vh;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-primary) transparent;
-}
-
-.eval-card::-webkit-scrollbar {
-  width: 5px;
-}
-.eval-card::-webkit-scrollbar-track {
-  background: transparent;
-}
-.eval-card::-webkit-scrollbar-thumb {
-  background: var(--color-primary);
-  border-radius: var(--radius-full);
 }
 
 .eval-card__placeholder {
