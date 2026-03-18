@@ -1,0 +1,643 @@
+/* ============================================================
+   print.css — Estilos del reporte PDF + modal del planificador
+   ============================================================ */
+
+/* ── REPORTE OCULTO EN PANTALLA ─────────────────────────── */
+#print-report { display: none; }
+
+/* ── MODAL PLAN DE PROYECTO ─────────────────────────────── */
+#plan-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  display: none;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+#plan-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+.plan-modal-panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  background: var(--bg-surface);
+  border-left: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  animation: slide-in-right 0.28s cubic-bezier(.4,0,.2,1);
+}
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.plan-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-7);
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.plan-modal-eyebrow {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.plan-modal-title {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.plan-modal-project-name {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-top: var(--space-1);
+}
+
+.plan-modal-close {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+.plan-modal-close:hover { background: var(--color-primary-glow); color: var(--color-primary); }
+
+.plan-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6) var(--space-7);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.plan-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-7);
+  border-top: 1px solid var(--border-color);
+  flex-shrink: 0;
+  background: var(--bg-surface);
+}
+
+/* ── SECCIONES DEL PLAN ─────────────────────────────────── */
+.plan-section { display: flex; flex-direction: column; gap: var(--space-4); }
+
+.plan-section__header { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.plan-section__title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.plan-section__desc {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+/* ── TEAM ROWS ───────────────────────────────────────────── */
+.plan-team-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-color);
+  animation: item-in 0.2s ease;
+}
+.plan-team-row:last-child { border-bottom: none; }
+
+.plan-row-num {
+  width: 22px;
+  text-align: center;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* ── PHASE ROWS ──────────────────────────────────────────── */
+.plan-phase-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-color);
+  animation: item-in 0.2s ease;
+}
+.plan-phase-row:last-child { border-bottom: none; }
+
+.plan-phase-badge {
+  flex-shrink: 0;
+  background: var(--color-primary-glow);
+  color: var(--color-primary);
+  border: 1px solid rgba(108, 99, 255, 0.3);
+  border-radius: var(--radius-full);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  white-space: nowrap;
+  margin-top: 6px;
+}
+
+.plan-phase-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* ── KPI ROWS ────────────────────────────────────────────── */
+.plan-kpi-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-color);
+  animation: item-in 0.2s ease;
+}
+.plan-kpi-row:last-child { border-bottom: none; }
+
+.plan-kpi-num {
+  width: 22px;
+  text-align: center;
+  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  color: var(--color-secondary);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── INPUTS DEL PLAN ─────────────────────────────────────── */
+.plan-input {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: var(--text-sm);
+  transition: var(--transition-fast);
+}
+.plan-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: var(--bg-surface);
+}
+.plan-input--duration { max-width: 130px; }
+.plan-input--kpi      { flex: 1; }
+
+/* ── QTY CONTROL ─────────────────────────────────────────── */
+.plan-qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.plan-qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+.plan-qty-btn:hover { background: var(--color-primary-glow); border-color: var(--color-primary); color: var(--color-primary); }
+
+.plan-qty-val {
+  min-width: 24px;
+  text-align: center;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+}
+
+/* ── REMOVE BUTTON ───────────────────────────────────────── */
+.plan-remove-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: var(--transition-fast);
+}
+.plan-remove-btn:hover {
+  background: rgba(255, 71, 87, 0.1);
+  border-color: rgba(255, 71, 87, 0.3);
+  color: var(--color-error);
+}
+
+/* ── ADD BUTTON ──────────────────────────────────────────── */
+.plan-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-secondary);
+  background: var(--color-secondary-glow);
+  border: 1.5px dashed var(--color-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  align-self: flex-start;
+}
+.plan-add-btn:hover {
+  background: var(--color-secondary);
+  color: #fff;
+  border-style: solid;
+}
+
+/* ── PRESUPUESTO BOX ─────────────────────────────────────── */
+.plan-budget-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5) var(--space-6);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+}
+.plan-budget-label  { font-size: var(--text-sm); color: var(--text-muted); }
+.plan-budget-amount {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  font-family: var(--font-mono);
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ══════════════════════════════════════════════════════════
+   ESTILOS DE IMPRESIÓN (PDF)
+══════════════════════════════════════════════════════════ */
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+
+  /* Ocultar absolutamente todo excepto el reporte */
+  body > *          { display: none !important; }
+  #print-report     { display: block !important; }
+  #plan-modal       { display: none !important; }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.4cm 1.8cm;
+  }
+}
+
+/* ── DOCUMENTO DEL REPORTE ───────────────────────────────── */
+.pr-doc {
+  font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10pt;
+  color: #1a1a2e;
+  background: #ffffff;
+  line-height: 1.55;
+}
+
+/* ── ENCABEZADO ──────────────────────────────────────────── */
+.pr-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 4px;
+}
+
+.pr-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pr-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+
+.pr-brand-name {
+  font-size: 15pt;
+  font-weight: 800;
+  color: #6C63FF;
+  line-height: 1.1;
+}
+
+.pr-brand-sub {
+  font-size: 9pt;
+  color: #666;
+  font-weight: 400;
+}
+
+.pr-header__meta { text-align: right; }
+
+.pr-report-title {
+  font-size: 13pt;
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.pr-report-date {
+  font-size: 8.5pt;
+  color: #888;
+  margin-top: 2px;
+}
+
+.pr-status-badge {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pr-status-badge--pending     { background: #FFF3CD; color: #856404; }
+.pr-status-badge--under_review{ background: #CCE5FF; color: #004085; }
+.pr-status-badge--approved    { background: #D4EDDA; color: #155724; }
+.pr-status-badge--rejected    { background: #F8D7DA; color: #721C24; }
+
+.pr-divider {
+  height: 3px;
+  background: linear-gradient(90deg, #6C63FF, #00D4AA);
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+/* ── SECCIONES ───────────────────────────────────────────── */
+.pr-section {
+  margin-bottom: 22px;
+  page-break-inside: avoid;
+}
+
+.pr-break-before { page-break-before: always; padding-top: 4px; }
+
+.pr-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11pt;
+  font-weight: 800;
+  color: #6C63FF;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #6C63FF22;
+}
+
+.pr-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: #6C63FF;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 8pt;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* ── TABLA DE DATOS ──────────────────────────────────────── */
+.pr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.5pt;
+  margin-bottom: 10px;
+}
+
+.pr-table .pr-k {
+  width: 38%;
+  color: #555;
+  font-weight: 500;
+  padding: 5px 8px 5px 0;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.pr-table .pr-v {
+  color: #1a1a2e;
+  padding: 5px 0;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.pr-table--data thead tr th {
+  background: #f4f3ff;
+  color: #6C63FF;
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 2px solid #6C63FF33;
+}
+
+.pr-table--data tbody tr td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 9.5pt;
+  vertical-align: top;
+}
+
+.pr-table--data tbody tr:last-child td { border-bottom: none; }
+.pr-table--data tbody tr:nth-child(even) td { background: #fafafa; }
+
+.pr-table--phases .pr-desc-cell { color: #555; font-size: 9pt; }
+
+.pr-total-row td { background: #f4f3ff !important; }
+
+.pr-idx      { color: #888; font-size: 8.5pt; font-family: monospace; }
+.pr-qty      { color: #333; font-weight: 600; white-space: nowrap; }
+.pr-duration { color: #6C63FF; font-weight: 600; white-space: nowrap; }
+.pr-total-num{ color: #6C63FF; font-size: 12pt; }
+
+/* ── SCORE BARS ──────────────────────────────────────────── */
+.pr-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pr-bar {
+  flex: 1;
+  height: 8px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 180px;
+}
+
+.pr-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6C63FF, #00D4AA);
+  border-radius: 4px;
+  min-width: 2px;
+}
+
+.pr-bar-label {
+  font-size: 9pt;
+  font-weight: 700;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* ── SUBSECCIONES Y TEXTO ────────────────────────────────── */
+.pr-subsection { margin-top: 12px; }
+
+.pr-sub-title {
+  font-size: 8.5pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.pr-body-text {
+  font-size: 9.5pt;
+  color: #333;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+.pr-notes {
+  background: #f9f9f9;
+  border-left: 3px solid #6C63FF;
+  padding: 8px 12px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* ── TAGS ────────────────────────────────────────────────── */
+.pr-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.pr-tag {
+  display: inline-block;
+  background: #f0efff;
+  color: #6C63FF;
+  border: 1px solid #d4d0ff;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 8.5pt;
+  font-weight: 600;
+}
+
+/* ── LISTAS ──────────────────────────────────────────────── */
+.pr-list {
+  list-style: disc;
+  padding-left: 18px;
+  color: #333;
+  font-size: 9.5pt;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.pr-list--warning { list-style: none; padding-left: 0; }
+.pr-list--warning li::before { content: '⚠ '; color: #d97706; }
+
+.pr-kpi-list {
+  list-style: decimal;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 9.5pt;
+  color: #333;
+}
+
+.pr-kpi-list li { line-height: 1.5; }
+
+/* ── PRESUPUESTO ─────────────────────────────────────────── */
+.pr-budget-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f3ff;
+  border: 2px solid #6C63FF33;
+  border-radius: 8px;
+  padding: 14px 18px;
+}
+
+.pr-budget-label  { font-size: 9.5pt; color: #555; }
+.pr-budget-amount { font-size: 16pt; font-weight: 800; color: #6C63FF; font-family: monospace; }
+
+/* ── PIE DE PÁGINA ───────────────────────────────────────── */
+.pr-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+  font-size: 8pt;
+  color: #aaa;
+}
+
+/* ── BOTÓN GENERAR PLAN ──────────────────────────────────── */
+.btn-plan {
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-dark));
+  color: #fff;
+  box-shadow: 0 4px 20px var(--color-secondary-glow);
+}
+.btn-plan:hover {
+  background: linear-gradient(135deg, var(--color-secondary-light), var(--color-secondary));
+  box-shadow: 0 8px 30px rgba(0, 212, 170, 0.4);
+  transform: translateY(-2px);
+  color: #fff;
+}

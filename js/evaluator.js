@@ -4,6 +4,7 @@
 import { getProposals, updateProposal, deleteProposal } from './api.js';
 import { showToast, escapeHtml, formatDate, getStatusBadgeHTML, setButtonLoading } from './ui.js';
 import { calcEvaluationTotal, getScoreColor, animateNumber } from './score.js';
+import { openPlanModal, closePlanModal } from './planner.js';
 
 const evalState = {
   proposals:  [],
@@ -186,6 +187,17 @@ export function renderEvaluationForm(proposal) {
         </svg>
       </button>
     </div>
+
+    <div style="margin-top:var(--space-5);padding-top:var(--space-5);border-top:1px solid var(--border-color);">
+      <button class="btn btn-plan w-full" id="btn-gen-plan">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
+        </svg>
+        Generar Plan de Proyecto
+      </button>
+    </div>
   `;
 
   setupEvalListeners();
@@ -269,6 +281,11 @@ function setupEvalListeners() {
 
   // Delete
   document.getElementById('btn-delete-proposal')?.addEventListener('click', handleDelete);
+
+  // Generar Plan
+  document.getElementById('btn-gen-plan')?.addEventListener('click', () => {
+    if (evalState.selected) openPlanModal(evalState.selected, { scores: evalState.scores });
+  });
 }
 
 // ── ENVIAR EVALUACIÓN ─────────────────────────────────────
@@ -289,18 +306,38 @@ export async function submitEvaluation() {
     showToast('Evaluación guardada exitosamente.', 'success');
     updateStatusUI(evalState.selected._id, evalState.status);
 
+    // Capturar propuesta antes de resetear estado
+    const savedProposal = {
+      ...evalState.selected,
+      status:         evalState.status,
+      evaluatorNotes: evalState.notes,
+      evaluatedBy:    evalState.evaluator,
+      score:          { ...evalState.scores }
+    };
+    const savedScores = { ...evalState.scores };
+
     // Recargar lista
     await loadPendingList();
 
-    // Limpiar form
+    // Mostrar estado de éxito con botón de plan
     const card = document.getElementById('eval-form-card');
     if (card) card.innerHTML = `
       <div class="eval-card__placeholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="1.5" style="width:48px;height:48px;margin:0 auto;">
           <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
-        <p>Evaluación enviada. Selecciona otra propuesta.</p>
+        <p style="margin-bottom:var(--space-5);">Evaluación guardada. ¿Deseas generar el plan de proyecto?</p>
+        <button class="btn btn-plan" id="btn-gen-plan-post" style="width:100%;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+          Generar Plan de Proyecto
+        </button>
       </div>`;
+    document.getElementById('btn-gen-plan-post')?.addEventListener('click', () => {
+      openPlanModal(savedProposal, { scores: savedScores });
+    });
 
     evalState.selected = null;
     document.dispatchEvent(new CustomEvent('proposalCreated'));
