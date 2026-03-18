@@ -1,7 +1,8 @@
 /* ============================================================
    dashboard.js — Carga, render y filtros del dashboard
    ============================================================ */
-import { getProposals, getStats, deleteProposal } from './api.js';
+import { getProposals, getStats, deleteProposal, updateProposal } from './api.js';
+import { PIN } from './evaluator.js';
 import {
   showSkeletons, renderEmptyState, renderErrorState,
   openModal, showToast, formatDate, formatDateRelative,
@@ -214,14 +215,50 @@ export function renderProposalModal(p) {
   const footerHTML = `
     <button class="btn btn-outline btn-sm" onclick="window.print()" aria-label="Exportar a PDF">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-      Exportar PDF
+      PDF
     </button>
-    <button class="btn btn-primary btn-sm" onclick="document.querySelector('.modal-overlay').classList.remove('open');setTimeout(()=>document.querySelector('.modal-overlay')?.remove(),350);">
-      Cerrar
-    </button>
+    <button class="btn btn-ghost btn-sm" id="modal-btn-review"  data-proposal-id="${p._id}" data-new-status="under_review">🔵 En revisión</button>
+    <button class="btn btn-success btn-sm" id="modal-btn-approve" data-proposal-id="${p._id}" data-new-status="approved">✅ Aprobar</button>
+    <button class="btn btn-danger btn-sm"  id="modal-btn-reject"  data-proposal-id="${p._id}" data-new-status="rejected">❌ Rechazar</button>
+    <button class="btn btn-primary btn-sm" id="modal-btn-close">Cerrar</button>
   `;
 
-  openModal(escapeHtml(p.projectName), bodyHTML, footerHTML);
+  const overlay = openModal(escapeHtml(p.projectName), bodyHTML, footerHTML);
+
+  // Cerrar
+  overlay.querySelector('#modal-btn-close')?.addEventListener('click', () => {
+    import('./ui.js').then(({ closeModal }) => closeModal());
+  });
+
+  // Botones de evaluación
+  ['modal-btn-review', 'modal-btn-approve', 'modal-btn-reject'].forEach(btnId => {
+    overlay.querySelector(`#${btnId}`)?.addEventListener('click', async (e) => {
+      const btn       = e.currentTarget;
+      const proposalId = btn.dataset.proposalId;
+      const newStatus  = btn.dataset.newStatus;
+
+      const inputPin = window.prompt('Ingresa el PIN de evaluador para cambiar el estado:');
+      if (inputPin === null) return;
+      if (inputPin !== PIN) {
+        showToast('PIN incorrecto.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Guardando...';
+      try {
+        await updateProposal(proposalId, { status: newStatus });
+        const labels = { under_review: 'En revisión', approved: 'Aprobada', rejected: 'Rechazada' };
+        showToast(`Propuesta marcada como: ${labels[newStatus]}`, 'success');
+        import('./ui.js').then(({ closeModal }) => closeModal());
+        loadProposals();
+        loadStats();
+      } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+        btn.disabled = false;
+      }
+    });
+  });
 }
 
 function renderScoreBar(label, value) {

@@ -15,7 +15,7 @@ const evalState = {
   unlocked:   false
 };
 
-const PIN = 'EvaluaTion2026!**!'; // PIN de acceso al panel de evaluación
+export const PIN = 'EvaluaTion2026!**!'; // PIN de acceso al panel de evaluación
 
 // ── INIT ──────────────────────────────────────────────────
 export function initEvaluator() {

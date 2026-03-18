@@ -315,6 +315,16 @@ p { color: var(--text-secondary); line-height: 1.7; }
   color: #fff;
 }
 
+.btn-success {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+.btn-success:hover {
+  background: var(--color-success);
+  color: #fff;
+}
+
 .btn-sm {
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-xs);
