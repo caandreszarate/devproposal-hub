@@ -415,200 +415,227 @@ function buildPrintContent() {
   const STATUS_LABELS = { pending: 'Pendiente', under_review: 'En revisión', approved: 'Aprobado', rejected: 'Rechazado' };
   const TYPE_EMOJI    = { web_app: '🌐', mobile: '📱', api: '⚡', data: '📊', ai: '🤖', other: '💡' };
   const CRITERIA      = [
-    { key: 'impact',      label: 'Impacto',        icon: '🚀' },
-    { key: 'feasibility', label: 'Factibilidad',   icon: '⚙️' },
-    { key: 'innovation',  label: 'Innovación',     icon: '💡' },
-    { key: 'resources',   label: 'Recursos',       icon: '👥' },
+    { key: 'impact',      label: 'Impacto',      icon: '🚀' },
+    { key: 'feasibility', label: 'Factibilidad', icon: '⚙️' },
+    { key: 'innovation',  label: 'Innovación',   icon: '💡' },
+    { key: 'resources',   label: 'Recursos',     icon: '👥' },
   ];
 
-  const scores      = p.score || {};
-  const totalScore  = p.score?.total || Math.round(
-    Object.values({ impact: scores.impact || 0, feasibility: scores.feasibility || 0, innovation: scores.innovation || 0, resources: scores.resources || 0 })
-      .reduce((a, b) => a + b, 0) * 5
+  const scores     = p.score || {};
+  const totalScore = p.score?.total || Math.round(
+    ['impact','feasibility','innovation','resources']
+      .reduce((s, k) => s + (scores[k] || 0), 0) * 5
   );
 
-  const presDate = p.presentationDate
+  const presDate    = p.presentationDate
     ? new Date(p.presentationDate + 'T00:00:00').toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })
     : null;
-
   const totalPeople = planState.team.reduce((s, r) => s + r.qty, 0);
 
   const printEl = document.getElementById('print-report');
   if (!printEl) return;
 
+  // Helper: sección header
+  const sectionHeader = (num, title) => `
+    <div class="pr-section-header">
+      <div class="pr-num">${num}</div>
+      <div class="pr-section-title">${title}</div>
+    </div>`;
+
   printEl.innerHTML = `
   <div class="pr-doc">
 
-    <!-- ENCABEZADO -->
-    <header class="pr-header">
-      <div class="pr-header__brand">
-        <svg class="pr-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <rect width="32" height="32" rx="7" fill="#6C63FF"/>
-          <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-            <rect x="9" y="9" width="14" height="14" rx="2.5"/>
-            <line x1="4" y1="12" x2="9" y2="12"/><line x1="4" y1="20" x2="9" y2="20"/>
-            <line x1="23" y1="12" x2="28" y2="12"/><line x1="23" y1="20" x2="28" y2="20"/>
-            <line x1="12" y1="4" x2="12" y2="9"/><line x1="20" y1="4" x2="20" y2="9"/>
-            <line x1="12" y1="23" x2="12" y2="28"/><line x1="20" y1="23" x2="20" y2="28"/>
-          </g>
-          <path d="M16 12.5 L17 14.9 L19.5 16 L17 17.1 L16 19.5 L15 17.1 L12.5 16 L15 14.9 Z" fill="white"/>
-        </svg>
-        <div>
-          <div class="pr-brand-name">DevProposal Hub</div>
-          <div class="pr-brand-sub">WBL Inteligencia Artificial</div>
+    <!-- ══ PORTADA ══ -->
+    <div class="pr-cover">
+      <div class="pr-cover-top">
+        <div class="pr-cover-brand">
+          <svg class="pr-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="7" fill="rgba(255,255,255,0.2)"/>
+            <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
+              <rect x="9" y="9" width="14" height="14" rx="2.5"/>
+              <line x1="4" y1="12" x2="9" y2="12"/><line x1="4" y1="20" x2="9" y2="20"/>
+              <line x1="23" y1="12" x2="28" y2="12"/><line x1="23" y1="20" x2="28" y2="20"/>
+              <line x1="12" y1="4" x2="12" y2="9"/><line x1="20" y1="4" x2="20" y2="9"/>
+              <line x1="12" y1="23" x2="12" y2="28"/><line x1="20" y1="23" x2="20" y2="28"/>
+            </g>
+            <path d="M16 12.5 L17 14.9 L19.5 16 L17 17.1 L16 19.5 L15 17.1 L12.5 16 L15 14.9 Z" fill="white"/>
+          </svg>
+          <div>
+            <div class="pr-brand-name">DevProposal Hub</div>
+            <div class="pr-brand-sub">WBL Inteligencia Artificial</div>
+          </div>
+        </div>
+        <div class="pr-cover-meta">
+          <div class="pr-report-label">Reporte de Proyecto</div>
+          <div class="pr-report-date">${now}</div>
         </div>
       </div>
-      <div class="pr-header__meta">
-        <div class="pr-report-title">Reporte de Propuesta de Proyecto</div>
-        <div class="pr-report-date">Generado el ${now}</div>
-        <div class="pr-status-badge pr-status-badge--${p.status || 'pending'}">${STATUS_LABELS[p.status] || 'Pendiente'}</div>
+
+      <div class="pr-cover-title-block">
+        <div class="pr-cover-eyebrow">Propuesta de Desarrollo de Software</div>
+        <div class="pr-cover-project-name">${escapeHtml(p.projectName)}</div>
+        <div class="pr-cover-proposer">Proponente: ${escapeHtml(p.proposerName)}${presDate ? ' &nbsp;·&nbsp; ' + presDate : ''}</div>
+        <div class="pr-cover-chips">
+          <span class="pr-cover-chip">${TYPE_EMOJI[p.projectType] || ''} ${getTypeLabel(p.projectType)}</span>
+          <span class="pr-cover-chip">⏱ ${getTimeLabel(p.estimatedTime)}</span>
+          <span class="pr-cover-chip">👥 ${p.teamSize || 1} persona${(p.teamSize || 1) > 1 ? 's' : ''}</span>
+          ${p.expectedBenefit ? `<span class="pr-cover-chip">📈 Beneficio ${getBenefitLabel(p.expectedBenefit)}</span>` : ''}
+          ${p.requiresBudget ? `<span class="pr-cover-chip">💰 $${(p.budgetAmount || 0).toLocaleString('es-CO')} USD</span>` : ''}
+        </div>
+        <div class="pr-status-cover pr-status-cover--${p.status || 'pending'}">${STATUS_LABELS[p.status] || 'Pendiente'}</div>
       </div>
-    </header>
-    <div class="pr-divider"></div>
+    </div>
 
-    <!-- SECCIÓN 1: RESUMEN -->
-    <section class="pr-section">
-      <div class="pr-section-title"><span class="pr-num">01</span>Resumen de la Propuesta</div>
-      <table class="pr-table">
-        <tr><td class="pr-k">Nombre del proyecto</td><td class="pr-v"><strong>${escapeHtml(p.projectName)}</strong></td></tr>
-        <tr><td class="pr-k">Proponente</td><td class="pr-v">${escapeHtml(p.proposerName)}</td></tr>
-        ${presDate ? `<tr><td class="pr-k">Fecha de presentación</td><td class="pr-v">${presDate}</td></tr>` : ''}
-        <tr><td class="pr-k">Tipo de proyecto</td><td class="pr-v">${TYPE_EMOJI[p.projectType] || ''} ${getTypeLabel(p.projectType)}</td></tr>
-        <tr><td class="pr-k">Tiempo estimado</td><td class="pr-v">${getTimeLabel(p.estimatedTime)}</td></tr>
-        <tr><td class="pr-k">Tamaño de equipo requerido</td><td class="pr-v">${p.teamSize || 1} persona(s)</td></tr>
-        ${p.expectedBenefit ? `<tr><td class="pr-k">Beneficio esperado</td><td class="pr-v">${getBenefitLabel(p.expectedBenefit)}</td></tr>` : ''}
-        ${p.urgencyLevel ? `<tr><td class="pr-k">Nivel de urgencia</td><td class="pr-v">${p.urgencyLevel} / 5</td></tr>` : ''}
-        ${p.requiresBudget ? `<tr><td class="pr-k">Presupuesto estimado</td><td class="pr-v">$${(p.budgetAmount || 0).toLocaleString('es-CO')} USD</td></tr>` : ''}
-      </table>
+    <!-- ══ CUERPO ══ -->
+    <div class="pr-body">
 
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Descripción del problema</div>
-        <div class="pr-body-text">${escapeHtml(p.problemDescription || '—')}</div>
-      </div>
+      <!-- SECCIÓN 1: RESUMEN -->
+      <section class="pr-section">
+        ${sectionHeader('01', 'Resumen de la Propuesta')}
+        <table class="pr-info-table">
+          <tr><td class="pr-k">Nombre del proyecto</td><td class="pr-v"><strong>${escapeHtml(p.projectName)}</strong></td></tr>
+          <tr><td class="pr-k">Proponente</td><td class="pr-v">${escapeHtml(p.proposerName)}</td></tr>
+          ${presDate ? `<tr><td class="pr-k">Fecha de presentación</td><td class="pr-v">${presDate}</td></tr>` : ''}
+          <tr><td class="pr-k">Tipo de proyecto</td><td class="pr-v">${TYPE_EMOJI[p.projectType] || ''} ${getTypeLabel(p.projectType)}</td></tr>
+          <tr><td class="pr-k">Tiempo estimado</td><td class="pr-v">${getTimeLabel(p.estimatedTime)}</td></tr>
+          <tr><td class="pr-k">Equipo requerido</td><td class="pr-v">${p.teamSize || 1} persona(s)</td></tr>
+          ${p.urgencyLevel ? `<tr><td class="pr-k">Urgencia</td><td class="pr-v">${p.urgencyLevel} / 5</td></tr>` : ''}
+        </table>
 
-      ${p.targetUsers ? `
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Usuarios afectados</div>
-        <div class="pr-body-text">${escapeHtml(p.targetUsers)}</div>
-      </div>` : ''}
+        <div class="pr-subsection">
+          <div class="pr-sub-title">Descripción del problema</div>
+          <div class="pr-body-text">${escapeHtml(p.problemDescription || '—')}</div>
+        </div>
 
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Solución propuesta</div>
-        <div class="pr-body-text">${escapeHtml(p.solutionDescription || '—')}</div>
-      </div>
+        ${p.targetUsers ? `<div class="pr-subsection"><div class="pr-sub-title">Usuarios afectados</div><div class="pr-body-text">${escapeHtml(p.targetUsers)}</div></div>` : ''}
 
-      ${p.techStack?.length ? `
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Stack tecnológico</div>
-        <div class="pr-tags">${p.techStack.map(t => `<span class="pr-tag">${escapeHtml(t)}</span>`).join('')}</div>
-      </div>` : ''}
+        <div class="pr-subsection">
+          <div class="pr-sub-title">Solución propuesta</div>
+          <div class="pr-body-text">${escapeHtml(p.solutionDescription || '—')}</div>
+        </div>
 
-      ${p.keyFeatures?.filter(Boolean).length ? `
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Funcionalidades clave del Proyecto</div>
-        <ul class="pr-list">${p.keyFeatures.filter(Boolean).map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
-      </div>` : ''}
+        ${p.techStack?.length ? `
+        <div class="pr-subsection">
+          <div class="pr-sub-title">Stack tecnológico</div>
+          <div class="pr-tags">${p.techStack.map(t => `<span class="pr-tag">${escapeHtml(t)}</span>`).join('')}</div>
+        </div>` : ''}
 
-      ${p.mvpScope ? `
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Alcance del Proyecto</div>
-        <div class="pr-body-text">${escapeHtml(p.mvpScope)}</div>
-      </div>` : ''}
+        ${p.keyFeatures?.filter(Boolean).length ? `
+        <div class="pr-subsection">
+          <div class="pr-sub-title">Funcionalidades clave del Proyecto</div>
+          <ul class="pr-list">${p.keyFeatures.filter(Boolean).map(f => `<li>${escapeHtml(f)}</li>`).join('')}</ul>
+        </div>` : ''}
 
-      ${p.identifiedRisks?.filter(Boolean).length ? `
-      <div class="pr-subsection">
-        <div class="pr-sub-title">Riesgos identificados</div>
-        <ul class="pr-list pr-list--warning">${p.identifiedRisks.filter(Boolean).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
-      </div>` : ''}
-    </section>
+        ${p.mvpScope ? `<div class="pr-subsection"><div class="pr-sub-title">Alcance del Proyecto</div><div class="pr-body-text">${escapeHtml(p.mvpScope)}</div></div>` : ''}
 
-    <!-- SECCIÓN 2: EVALUACIÓN -->
-    <section class="pr-section pr-break-before">
-      <div class="pr-section-title"><span class="pr-num">02</span>Evaluación</div>
-      <table class="pr-table">
-        ${CRITERIA.map(c => {
-          const val = scores[c.key] || 0;
-          return `<tr>
-            <td class="pr-k">${c.icon} ${c.label}</td>
-            <td class="pr-v">
-              <div class="pr-bar-wrap">
-                <div class="pr-bar"><div class="pr-bar-fill" style="width:${val * 20}%"></div></div>
-                <span class="pr-bar-label">${val} / 5</span>
+        ${p.identifiedRisks?.filter(Boolean).length ? `
+        <div class="pr-subsection">
+          <div class="pr-sub-title">Riesgos identificados</div>
+          <ul class="pr-list pr-list--warning">${p.identifiedRisks.filter(Boolean).map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
+        </div>` : ''}
+      </section>
+
+      <!-- SECCIÓN 2: EVALUACIÓN -->
+      <section class="pr-section pr-break-before">
+        ${sectionHeader('02', 'Evaluación')}
+
+        <div class="pr-scores-grid">
+          ${CRITERIA.map(c => {
+            const val = scores[c.key] || 0;
+            return `
+            <div class="pr-score-card">
+              <div class="pr-score-card-header">
+                <span class="pr-score-label">${c.icon} ${c.label}</span>
+                <span class="pr-score-value">${val}/5</span>
               </div>
-            </td>
-          </tr>`;
-        }).join('')}
-        <tr class="pr-total-row">
-          <td class="pr-k"><strong>Score Total</strong></td>
-          <td class="pr-v"><strong class="pr-total-num">${totalScore} / 100</strong></td>
-        </tr>
-      </table>
-      ${p.evaluatedBy ? `<div class="pr-subsection"><div class="pr-sub-title">Evaluador</div><div class="pr-body-text">${escapeHtml(p.evaluatedBy)}</div></div>` : ''}
-      ${p.evaluatorNotes ? `<div class="pr-subsection"><div class="pr-sub-title">Notas del evaluador</div><div class="pr-body-text pr-notes">${escapeHtml(p.evaluatorNotes)}</div></div>` : ''}
-    </section>
+              <div class="pr-score-bar-track">
+                <div class="pr-score-bar-fill" style="width:${val * 20}%"></div>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
 
-    <!-- SECCIÓN 3: EQUIPO -->
-    <section class="pr-section">
-      <div class="pr-section-title"><span class="pr-num">03</span>Equipo Propuesto</div>
-      <table class="pr-table pr-table--data">
-        <thead><tr><th>#</th><th>Rol</th><th>Cantidad</th></tr></thead>
-        <tbody>
-          ${planState.team.map((item, i) => `
-          <tr>
-            <td class="pr-idx">${i + 1}</td>
-            <td>${escapeHtml(item.role)}</td>
-            <td class="pr-qty">${item.qty} persona${item.qty > 1 ? 's' : ''}</td>
-          </tr>`).join('')}
-          <tr class="pr-total-row">
-            <td></td><td><strong>Total</strong></td>
-            <td class="pr-qty"><strong>${totalPeople} persona${totalPeople !== 1 ? 's' : ''}</strong></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+        <div class="pr-total-score-box">
+          <div>
+            <div class="pr-total-label">Score Total de Evaluación</div>
+            <div class="pr-total-sub">Basado en 4 criterios × 5 puntos c/u</div>
+          </div>
+          <div>
+            <div class="pr-total-number">${totalScore}</div>
+            <div class="pr-total-sub" style="text-align:right;">/ 100 pts</div>
+          </div>
+        </div>
 
-    <!-- SECCIÓN 4: PLAN DE TRABAJO -->
-    <section class="pr-section pr-break-before">
-      <div class="pr-section-title"><span class="pr-num">04</span>Plan de Trabajo</div>
-      <table class="pr-table pr-table--data pr-table--phases">
-        <thead><tr><th>Fase</th><th>Nombre</th><th>Duración</th><th>Descripción</th></tr></thead>
-        <tbody>
-          ${planState.phases.map((ph, i) => `
-          <tr>
-            <td class="pr-idx">Fase ${i + 1}</td>
-            <td><strong>${escapeHtml(ph.name)}</strong></td>
-            <td class="pr-duration">${escapeHtml(ph.duration)}</td>
-            <td class="pr-desc-cell">${escapeHtml(ph.desc)}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </section>
+        ${p.evaluatedBy ? `<div class="pr-subsection"><div class="pr-sub-title">Evaluador</div><div class="pr-body-text">${escapeHtml(p.evaluatedBy)}</div></div>` : ''}
+        ${p.evaluatorNotes ? `<div class="pr-subsection"><div class="pr-sub-title">Notas del evaluador</div><div class="pr-body-text pr-notes">${escapeHtml(p.evaluatorNotes)}</div></div>` : ''}
+      </section>
 
-    <!-- SECCIÓN 5: KPIs -->
-    <section class="pr-section">
-      <div class="pr-section-title"><span class="pr-num">05</span>KPIs / Métricas de Éxito</div>
-      <ol class="pr-kpi-list">
-        ${planState.kpis.filter(Boolean).map(kpi => `<li>${escapeHtml(kpi)}</li>`).join('')}
-      </ol>
-    </section>
+      <!-- SECCIÓN 3: EQUIPO -->
+      <section class="pr-section">
+        ${sectionHeader('03', 'Equipo Propuesto')}
+        <table class="pr-data-table">
+          <thead><tr><th>#</th><th>Rol</th><th>Cantidad</th></tr></thead>
+          <tbody>
+            ${planState.team.map((item, i) => `
+            <tr>
+              <td class="pr-idx">${i + 1}</td>
+              <td>${escapeHtml(item.role)}</td>
+              <td class="pr-qty">${item.qty} persona${item.qty > 1 ? 's' : ''}</td>
+            </tr>`).join('')}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td>Total del equipo</td>
+              <td class="pr-qty">${totalPeople} persona${totalPeople !== 1 ? 's' : ''}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
 
-    ${p.requiresBudget ? `
-    <!-- SECCIÓN 6: PRESUPUESTO -->
-    <section class="pr-section">
-      <div class="pr-section-title"><span class="pr-num">06</span>Presupuesto Estimado</div>
-      <div class="pr-budget-block">
-        <span class="pr-budget-label">Monto total estimado del proyecto</span>
-        <span class="pr-budget-amount">$${(p.budgetAmount || 0).toLocaleString('es-CO')} USD</span>
-      </div>
-    </section>` : ''}
+      <!-- SECCIÓN 4: PLAN DE TRABAJO -->
+      <section class="pr-section pr-break-before">
+        ${sectionHeader('04', 'Plan de Trabajo')}
+        <table class="pr-data-table">
+          <thead><tr><th>Fase</th><th>Nombre</th><th>Duración</th><th>Descripción</th></tr></thead>
+          <tbody>
+            ${planState.phases.map((ph, i) => `
+            <tr>
+              <td class="pr-idx">Fase ${i + 1}</td>
+              <td><strong>${escapeHtml(ph.name)}</strong></td>
+              <td class="pr-duration">${escapeHtml(ph.duration)}</td>
+              <td class="pr-desc-cell">${escapeHtml(ph.desc)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </section>
 
-    <!-- PIE DE PÁGINA -->
-    <footer class="pr-footer">
-      <span>Generado por <strong>DevProposal Hub</strong> — WBL Inteligencia Artificial</span>
-      <span>Documento confidencial · ${now}</span>
-    </footer>
+      <!-- SECCIÓN 5: KPIs -->
+      <section class="pr-section">
+        ${sectionHeader('05', 'KPIs / Métricas de Éxito')}
+        <ul class="pr-kpi-list">
+          ${planState.kpis.filter(Boolean).map((kpi, i) => `<li data-n="${i + 1}">${escapeHtml(kpi)}</li>`).join('')}
+        </ul>
+      </section>
 
-  </div>`;
+      ${p.requiresBudget ? `
+      <!-- SECCIÓN 6: PRESUPUESTO -->
+      <section class="pr-section">
+        ${sectionHeader('06', 'Presupuesto Estimado')}
+        <div class="pr-budget-block">
+          <span class="pr-budget-label">Monto total estimado del proyecto</span>
+          <span class="pr-budget-amount">$${(p.budgetAmount || 0).toLocaleString('es-CO')} USD</span>
+        </div>
+      </section>` : ''}
+
+      <!-- PIE DE PÁGINA -->
+      <footer class="pr-footer">
+        <span>Generado por <strong>DevProposal Hub</strong> — WBL Inteligencia Artificial</span>
+        <span>Documento confidencial · ${now}</span>
+      </footer>
+
+    </div><!-- /.pr-body -->
+  </div><!-- /.pr-doc -->`;
 }
 
 // ── DESCARGAR PDF ─────────────────────────────────────────
