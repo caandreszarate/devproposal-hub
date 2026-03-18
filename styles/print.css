@@ -276,11 +276,8 @@
   /* Mostrar el reporte */
   #print-report {
     display: block !important;
-    position: fixed;
-    top: 0; left: 0;
     width: 100%;
     background: white;
-    z-index: 99999;
   }
 
   @page {
