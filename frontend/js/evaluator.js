@@ -15,7 +15,7 @@ const evalState = {
   unlocked:   false
 };
 
-const PIN = '1234'; // PIN simple para acceder al panel
+const PIN = 'EvaluaTion2026!**!'; // PIN de acceso al panel de evaluación
 
 // ── INIT ──────────────────────────────────────────────────
 export function initEvaluator() {
@@ -303,7 +303,8 @@ export async function submitEvaluation() {
     evalState.selected = null;
     document.dispatchEvent(new CustomEvent('proposalCreated'));
   } catch (err) {
-    showToast('Error: ' + err.message, 'error');
+    showToast('Error al guardar: ' + err.message, 'error');
+    console.error('[Evaluador] submitEvaluation error:', err);
   } finally {
     setButtonLoading(btn, false);
   }

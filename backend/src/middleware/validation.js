@@ -45,10 +45,10 @@ const updateProposalSchema = Joi.object({
   evaluatorNotes: Joi.string().allow('').optional(),
   evaluatedBy:    Joi.string().allow('').optional(),
   score: Joi.object({
-    impact:      Joi.number().min(1).max(5),
-    feasibility: Joi.number().min(1).max(5),
-    innovation:  Joi.number().min(1).max(5),
-    resources:   Joi.number().min(1).max(5)
+    impact:      Joi.number().min(0).max(5),
+    feasibility: Joi.number().min(0).max(5),
+    innovation:  Joi.number().min(0).max(5),
+    resources:   Joi.number().min(0).max(5)
   }).optional()
 });
 
