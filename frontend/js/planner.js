@@ -435,6 +435,8 @@ function buildPrintContent() {
   const printEl = document.getElementById('print-report');
   if (!printEl) return;
 
+  const base = new URL('.', document.baseURI).href;
+
   // Helper: sección header
   const sectionHeader = (num, title) => `
     <div class="pr-section-header">
