@@ -247,8 +247,29 @@ input[type="date"].form-control {
   color-scheme: dark;
 }
 
-[data-theme="light"] input[type="date"].form-control {
+html.light-mode input[type="date"].form-control {
   color-scheme: light;
+}
+
+/* ── CAMPO TELÉFONO (fila código + número) ── */
+.phone-row {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.phone-code-select {
+  width: 190px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 500px) {
+  .phone-row {
+    flex-direction: column;
+  }
+  .phone-code-select {
+    width: 100%;
+  }
 }
 
 select.form-control {

@@ -30,24 +30,31 @@ const getProposals = async (req, res, next) => {
     const limit  = Math.min(50, parseInt(req.query.limit) || 12);
     const skip   = (page - 1) * limit;
 
+    // Whitelist de estados y tipos válidos
+    const VALID_STATUSES = ['pending', 'under_review', 'approved', 'rejected'];
+    const VALID_TYPES    = ['web_app', 'mobile', 'api', 'data', 'ai', 'other'];
+    const VALID_SORT     = ['createdAt', 'updatedAt', 'projectName', 'score.viability', 'score.total'];
+
     const filter = {};
-    if (req.query.status && req.query.status !== 'all') {
+    if (req.query.status && VALID_STATUSES.includes(req.query.status)) {
       filter.status = req.query.status;
     }
-    if (req.query.type && req.query.type !== 'all') {
+    if (req.query.type && VALID_TYPES.includes(req.query.type)) {
       filter.projectType = req.query.type;
     }
     if (req.query.search) {
-      const escaped = req.query.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      // Limitar longitud de búsqueda y escapar regex
+      const raw     = String(req.query.search).slice(0, 100);
+      const escaped = raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
-        { projectName:   new RegExp(escaped, 'i') },
-        { proposerName:  new RegExp(escaped, 'i') },
-        { team:          new RegExp(escaped, 'i') }
+        { projectName:  new RegExp(escaped, 'i') },
+        { proposerName: new RegExp(escaped, 'i') },
       ];
     }
 
-    const sortField = req.query.sortBy || 'createdAt';
-    const sortOrder = req.query.order  === 'asc' ? 1 : -1;
+    // Whitelist del campo de ordenamiento
+    const sortField = VALID_SORT.includes(req.query.sortBy) ? req.query.sortBy : 'createdAt';
+    const sortOrder = req.query.order === 'asc' ? 1 : -1;
 
     const [proposals, total] = await Promise.all([
       Proposal.find(filter)
@@ -171,14 +178,9 @@ const updateProposal = async (req, res, next) => {
   }
 };
 
-// DELETE /api/proposals/:id
+// DELETE /api/proposals/:id — auth ya verificada por requireAdminKey en el router
 const deleteProposal = async (req, res, next) => {
   try {
-    const adminKey = req.headers['x-admin-key'];
-    if (adminKey !== process.env.ADMIN_KEY) {
-      return res.status(403).json({ success: false, message: 'No autorizado' });
-    }
-
     const proposal = await Proposal.findByIdAndDelete(req.params.id);
     if (!proposal) {
       return res.status(404).json({ success: false, message: 'Propuesta no encontrada' });

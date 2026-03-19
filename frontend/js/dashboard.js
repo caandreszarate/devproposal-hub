@@ -1,7 +1,7 @@
 /* ============================================================
    dashboard.js — Carga, render y filtros del dashboard
    ============================================================ */
-import { getProposals, getStats, deleteProposal, updateProposal } from './api.js';
+import { getProposals, getStats, deleteProposal, updateProposal, exportProposals } from './api.js';
 import { PIN } from './evaluator.js';
 import {
   showSkeletons, renderEmptyState, renderErrorState,
@@ -223,9 +223,9 @@ export function renderProposalModal(p) {
   const footerHTML = `
     <!-- Botones normales -->
     <div id="modal-footer-actions" style="display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;width:100%;">
-      <button class="btn btn-outline btn-sm" id="modal-btn-pdf" aria-label="Exportar a PDF">
+      <button class="btn btn-pdf btn-sm" id="modal-btn-pdf" aria-label="Exportar propuesta a PDF">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        PDF
+        Descargar PDF
       </button>
       <div style="margin-left:auto;display:flex;gap:var(--space-2);flex-wrap:wrap;">
         <button class="btn btn-ghost btn-sm eval-action-btn" data-proposal-id="${p._id}" data-new-status="under_review">🔵 En revisión</button>
@@ -443,7 +443,11 @@ export async function loadStats() {
       }
     });
   } catch {
-    // Stats son opcionales — el dashboard funciona sin ellas
+    // Stats son opcionales pero mostramos 0 en lugar de dejar "—"
+    ['stat-total', 'stat-approved', 'stat-pending', 'stat-avg-score'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.textContent === '—') el.textContent = '0';
+    });
   }
 }
 
@@ -661,9 +665,13 @@ function exportProposalPDF(p) {
 
 // ── EXPORT ─────────────────────────────────────────────────
 export async function exportAllToJSON() {
+  const adminKey = prompt('Ingresa la clave de administrador para exportar los datos:');
+  if (!adminKey) return;
+
   try {
-    const data = await getProposals({ limit: 1000 });
-    const blob = new Blob([JSON.stringify(data.data, null, 2)], { type: 'application/json' });
+    const data = await exportProposals(adminKey);
+    const proposals = Array.isArray(data) ? data : (data.data || []);
+    const blob = new Blob([JSON.stringify(proposals, null, 2)], { type: 'application/json' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href     = url;

@@ -59,7 +59,7 @@ const updateProposalSchema = Joi.object({
   }).optional()
 });
 
-// Middleware factory
+// Middleware factory de validación de body
 const validate = (schema) => (req, res, next) => {
   const { error, value } = schema.validate(req.body, { abortEarly: false, stripUnknown: true });
   if (error) {
@@ -70,7 +70,35 @@ const validate = (schema) => (req, res, next) => {
   next();
 };
 
+// Middleware: validar que req.params.id sea un MongoDB ObjectId válido
+const validateObjectId = (req, res, next) => {
+  if (!/^[a-f\d]{24}$/i.test(req.params.id)) {
+    return res.status(400).json({ success: false, message: 'ID de propuesta inválido' });
+  }
+  next();
+};
+
+// Middleware: requerir x-admin-key válida
+const requireAdminKey = (req, res, next) => {
+  const adminKey = req.headers['x-admin-key'];
+  const envKey   = process.env.ADMIN_KEY;
+
+  // Si ADMIN_KEY no está configurada en el entorno, bloquear la operación
+  if (!envKey) {
+    console.error('[Security] ADMIN_KEY no está configurada en las variables de entorno');
+    return res.status(500).json({ success: false, message: 'Configuración de servidor incompleta' });
+  }
+
+  if (!adminKey || adminKey !== envKey) {
+    return res.status(403).json({ success: false, message: 'No autorizado' });
+  }
+
+  next();
+};
+
 module.exports = {
-  validateCreate: validate(createProposalSchema),
-  validateUpdate: validate(updateProposalSchema)
+  validateCreate:  validate(createProposalSchema),
+  validateUpdate:  validate(updateProposalSchema),
+  validateObjectId,
+  requireAdminKey,
 };

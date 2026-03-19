@@ -6,6 +6,11 @@
   <meta name="description" content="DevProposal Hub — Plataforma para proponer, estandarizar y evaluar proyectos de software en equipo.">
   <meta name="theme-color" content="#6C63FF">
 
+  <!-- Seguridad -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()">
+
   <!-- Open Graph -->
   <meta property="og:title"       content="DevProposal Hub">
   <meta property="og:description" content="Convierte tu idea en un proyecto real. Guía interactiva para proponer y evaluar proyectos de software.">
@@ -159,6 +164,14 @@
       </div>
     </div>
   </div>
+
+  <!-- Indicador de scroll -->
+  <button class="hero__scroll-hint" id="hero-scroll-hint" aria-label="Ver más contenido">
+    <span>Descubre más</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </button>
 </section>
 
 <!-- ═══════════════════════════════════════════════════════
@@ -504,8 +517,11 @@
   <div class="container">
     <div class="section-header reveal">
       <span class="eyebrow">Evaluadores</span>
-      <h2 id="evaluator-title">Panel de evaluación</h2>
-      <p>Revisa propuestas pendientes, asigna scores y registra tu retroalimentación.</p>
+      <h2 id="evaluator-title">
+        Panel de evaluación
+        <span class="evaluator-restricted-badge" aria-label="Zona restringida">🔒 Acceso restringido</span>
+      </h2>
+      <p>Revisa propuestas pendientes, asigna scores y registra tu retroalimentación. Se requiere PIN de evaluador.</p>
     </div>
 
     <!-- Lock overlay con PIN -->

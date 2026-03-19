@@ -189,6 +189,9 @@ export function renderEvaluationForm(proposal) {
     </div>
 
     <div style="margin-top:var(--space-5);padding-top:var(--space-5);border-top:1px solid var(--border-color);">
+      <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;margin-bottom:var(--space-3);">
+        💡 Guarda la evaluación primero para activar el plan completo, o genera un plan preliminar ahora.
+      </p>
       <button class="btn btn-plan w-full" id="btn-gen-plan">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/>

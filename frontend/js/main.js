@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initNavbar();
   initScrollReveal();
   initHeroCanvas();
+  initHeroScrollHint();
   initAccordions();
   initForm();
   initDashboard();
@@ -80,19 +81,32 @@ function initNavbar() {
     link.addEventListener('click', () => nav.classList.remove('open'));
   });
 
-  // Active link en scroll
+  // Active link en scroll — usa rootMargin para detectar la sección más visible
   const sections = document.querySelectorAll('section[id]');
-  const observer = new IntersectionObserver(entries => {
+  const navLinks = document.querySelectorAll('.navbar__link');
+
+  const navObserver = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        document.querySelectorAll('.navbar__link').forEach(l => {
+        navLinks.forEach(l => {
           l.classList.toggle('active', l.getAttribute('href') === `#${e.target.id}`);
         });
       }
     });
-  }, { threshold: 0.3 });
+  }, {
+    rootMargin: '-20% 0px -60% 0px', // activa cuando la sección ocupa la parte superior-media de la pantalla
+    threshold: 0
+  });
 
-  sections.forEach(s => observer.observe(s));
+  sections.forEach(s => navObserver.observe(s));
+}
+
+// ── SCROLL HINT DEL HERO ──────────────────────────────────
+function initHeroScrollHint() {
+  const btn = document.getElementById('hero-scroll-hint');
+  btn?.addEventListener('click', () => {
+    document.getElementById('guide-section')?.scrollIntoView({ behavior: 'smooth' });
+  });
 }
 
 // ── SMOOTH SCROLL ─────────────────────────────────────────
