@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // ── TEMA (dark/light) ──────────────────────────────────────
 function initTheme() {
-  const savedTheme = localStorage.getItem('devproposal_theme') || 'dark';
+  const savedTheme = localStorage.getItem('innovahub_theme') || localStorage.getItem('devproposal_theme') || 'dark';
   applyTheme(savedTheme);
 
   const toggleBtn = document.getElementById('theme-toggle');
@@ -30,7 +30,7 @@ function initTheme() {
     const current = document.documentElement.classList.contains('light-mode') ? 'light' : 'dark';
     const next    = current === 'dark' ? 'light' : 'dark';
     applyTheme(next);
-    localStorage.setItem('devproposal_theme', next);
+    localStorage.setItem('innovahub_theme', next);
   });
 }
 
