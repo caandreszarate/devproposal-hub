@@ -337,6 +337,39 @@
 /* ── SECCIÓN EVALUADOR ── */
 #evaluator-section {
   padding: var(--space-20) 0;
+  background: linear-gradient(180deg, transparent, rgba(108,99,255,0.04) 30%, rgba(108,99,255,0.04) 70%, transparent);
+  border-top: 1px solid var(--border-color);
+}
+
+/* Badge "zona restringida" en el eyebrow de la sección */
+.evaluator-restricted-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 3px var(--space-3);
+  background: rgba(255, 184, 51, 0.12);
+  border: 1px solid rgba(255, 184, 51, 0.30);
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-warning);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: var(--space-3);
+}
+
+/* Botón PDF destacado en footer del modal */
+.btn-pdf {
+  background: linear-gradient(135deg, #6C63FF, #4a3fd4);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(108,99,255,0.30);
+}
+.btn-pdf:hover {
+  background: linear-gradient(135deg, #8B85FF, #6C63FF);
+  box-shadow: 0 6px 24px rgba(108,99,255,0.45);
+  transform: translateY(-2px);
+  color: #fff;
 }
 
 .evaluator-grid {

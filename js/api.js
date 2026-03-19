@@ -70,9 +70,14 @@ export async function deleteProposal(id, adminKey) {
   }
 }
 
-export async function exportProposals() {
-  const res = await fetch(`${BASE_URL}/proposals/export`);
-  if (!res.ok) throw new Error('Error al exportar');
+export async function exportProposals(adminKey) {
+  const res = await fetch(`${BASE_URL}/proposals/export`, {
+    headers: { 'x-admin-key': adminKey || '' }
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.message || 'Error al exportar');
+  }
   return res.json();
 }
 

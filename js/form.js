@@ -173,8 +173,8 @@ function renderStep1() {
       </div>
       <div class="form-group" style="margin-top:var(--space-5);">
         <label class="form-label">Teléfono <span style="font-weight:400;opacity:0.6;font-size:0.85em;">(opcional)</span></label>
-        <div style="display:flex;gap:var(--space-2);">
-          <select id="phoneCode" name="phoneCode" class="form-control" style="width:200px;flex-shrink:0;">
+        <div class="phone-row">
+          <select id="phoneCode" name="phoneCode" class="form-control phone-code-select">
             <option value="">Indicativo</option>
             ${phoneSelectorHTML}
           </select>
