@@ -484,19 +484,10 @@ function exportProposalPDF(p) {
     <div class="pr-cover">
       <div class="pr-cover-top">
         <div class="pr-cover-brand">
-          <svg class="pr-logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="7" fill="rgba(255,255,255,0.2)"/>
-            <g stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none">
-              <rect x="9" y="9" width="14" height="14" rx="2.5"/>
-              <line x1="4" y1="12" x2="9" y2="12"/><line x1="4" y1="20" x2="9" y2="20"/>
-              <line x1="23" y1="12" x2="28" y2="12"/><line x1="23" y1="20" x2="28" y2="20"/>
-              <line x1="12" y1="4" x2="12" y2="9"/><line x1="20" y1="4" x2="20" y2="9"/>
-              <line x1="12" y1="23" x2="12" y2="28"/><line x1="20" y1="23" x2="20" y2="28"/>
-            </g>
-            <path d="M16 12.5 L17 14.9 L19.5 16 L17 17.1 L16 19.5 L15 17.1 L12.5 16 L15 14.9 Z" fill="white"/>
-          </svg>
+          <img src="${base}assets/Favicon.png" class="pr-logo-img" alt="InnovaHub"
+            style="width:44pt;height:44pt;border-radius:10pt;object-fit:cover;flex-shrink:0;">
           <div>
-            <div class="pr-brand-name">DevProposal Hub</div>
+            <div class="pr-brand-name">InnovaHub</div>
             <div class="pr-brand-sub">WBL Inteligencia Artificial</div>
           </div>
         </div>
@@ -630,7 +621,7 @@ function exportProposalPDF(p) {
 
       <!-- PIE DE PÁGINA -->
       <footer class="pr-footer">
-        <span>Generado por <strong>DevProposal Hub</strong> — WBL Inteligencia Artificial</span>
+        <span>Generado por <strong>InnovaHub</strong> — WBL Inteligencia Artificial</span>
         <span>Documento confidencial · ${now}</span>
       </footer>
 
@@ -647,7 +638,7 @@ function exportProposalPDF(p) {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>${escapeHtml(p.projectName)} — DevProposal Hub</title>
+  <title>${escapeHtml(p.projectName)} — InnovaHub</title>
   <link rel="stylesheet" href="${base}styles/print.css">
   <style>body{margin:0;background:#fff} #print-report{display:block!important}</style>
 </head>

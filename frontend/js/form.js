@@ -5,7 +5,7 @@ import { createProposal } from './api.js';
 import { calcCompleteness, calcViability, getScoreColor, getScoreLabel, animateNumber } from './score.js';
 import { showToast, escapeHtml, getTimeLabel, getBenefitLabel, getTypeLabel, setButtonLoading } from './ui.js';
 
-const DRAFT_KEY = 'devproposal_draft';
+const DRAFT_KEY = 'innovahub_draft';
 const TOTAL_STEPS = 5;
 
 // Estado global del formulario

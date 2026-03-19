@@ -36,23 +36,32 @@
   text-decoration: none;
 }
 
-.navbar__logo-icon {
-  width: 36px;
-  height: 36px;
-  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+/* Imagen del logo InnovaHub en navbar */
+.navbar__logo-img {
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-primary);
+  object-fit: cover;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(108,99,255,0.30));
+  transition: var(--transition-fast);
+}
+.navbar__logo:hover .navbar__logo-img {
+  filter: drop-shadow(0 4px 16px rgba(0,212,170,0.45));
+  transform: scale(1.05);
 }
 
-.navbar__logo-icon svg { width: 20px; height: 20px; color: #fff; }
-
+/* Tipografía del nombre: "Innova" en primary, "Hub" en teal */
 .navbar__logo-text {
   font-size: var(--text-lg);
   font-weight: 800;
   color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.navbar__logo-hub {
+  color: var(--color-secondary);
+  -webkit-text-fill-color: var(--color-secondary);
 }
 
 .navbar__nav {
